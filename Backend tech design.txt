@@ -1,0 +1,108 @@
+Backend features required for MVP:
+==================================
+- User registration and login via Facebook
+- Create new open mic:
+  - Mic name
+  - Venue name
+  - GPS location
+  - Producer
+  - Meeting basis
+  - Start time
+  - End time
+  - Set time
+  - Number of slots
+- Display all open mics
+  - GPS coordinates
+  - Status (green, yellow, red)
+- Display one open mic
+  - [Info listed under creation]
+  - View who have already signed up 
+  - View remaining slots
+  - User must be able to sign up to one slot
+  - User must be able to remove himself from slot
+  - Producer should be able to remove anyone from their slot
+
+Backend features required for future versions:
+==============================================
+- Send notification to the producer on the day of the mic
+  to determine if happening
+- Ability to subscribe to mics & get notified when signups open
+- Automatic transportation matching (i.e., ability to fetch a list
+  of people who are going to the same mics as you are)
+- Leaderboards
+- Ability to leave reviews on open mics
+
+=============================================
+Preliminary draft of REST API:
+Details coming soon (with JSON)
+=============================================
+Use Facebook ID as a user's unique ID in DB,
+and for all user lookups.
+
+/api/users/:userId
+	Endpoint for getting, updating and deleting a user.
+
+/api/mics
+	Endpoint for listing mics. This will also support filtering operations,
+	e.g., /api/mics?city=Berkeley.
+
+/api/mics/:micId
+	Endpoint for getting, updating and deleting a mic.
+
+/api/mics/:micId/reviews
+	Endpoint for getting and adding reviews on a specific mic.
+
+/api/mics/:micId/leaderboards
+	Endpoint for fetching the leaderboard for a specific mic.
+
+/api/mics/:micId/subscribers
+	Endpoint for subscribing or unsubscribing to a mic.
+
+/api/mics/:micId/instances/:instanceId
+	Endpoint for getting and updating a single mic instance.
+	This includes seeing and modifying the signup list.
+
+/api/mics/:micId/instances/:instanceId/checkin
+	Endpoint for checking in to a specific mic instance (for leaderboard).
+
+=============================================
+Preliminary database design:
+=============================================
+users:
+	user id    <- UK
+	name 
+	phone
+
+mics:
+	mic id     	<- UK
+	name
+	venue
+	producer id 	<- FK
+	meeting basis
+	time
+	set time
+	number of slots
+
+instances:
+	instance id <- UK
+	mic id      <- FK
+	date
+	status
+	[Maybe: time, venue, etc. This would give an instance
+	 the ability to override its parent.
+
+signups:
+	user id     <- FK
+	instance id <- FK
+	slot number
+	time
+
+reviews:
+	user id     <- FK
+	mic id      <- FK
+	comment
+	time
+
+checkins:
+	user id     <- FK
+	instance id <- FK
