@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var passportFacebook = require('passport-facebook');
@@ -10,6 +11,7 @@ var User = require('./models/user.js');
 
 var app = express();
 
+app.use(bodyParser.json());
 app.use(passport.initialize());
 
 /**
@@ -102,21 +104,35 @@ app.post('/api/users', function(req, res) {
  * '/api/users/:userId'
  *  GET: Fetch user by id
  *  PUT: Update user by id
- *  DELETE: Delete user by id
  */
 app.get('/api/users/:userId', function(req, res) {
 	User.findById(req.params.userId, function(err, user) {
 		if (err) {
 			res.status(404).send();
-		} else {
-			res.send(user);	
+			return;
 		}
+		res.send(user.data);
 	});
 });
 
 app.put('/api/users/:userId', function(req, res) {
-});
-app.delete('/api/users/:userId', function(req, res) {
+	// Check that you are updating your own user.
+	if (req.params.userId != req.user.get("id")) {
+		res.status(401).send();
+		return;
+	}
+	User.findById(req.params.userId, function(err, user) {
+		if (err) throw err;
+
+		// Update name field
+		if (req.body.name != null) {
+			user.set("name", req.body.name);
+		}
+
+		// Save user to database
+		user.save(function(err) { if (err) throw err; });
+		res.send();
+	});
 });
 
 /**

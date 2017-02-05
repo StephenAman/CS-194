@@ -1,17 +1,44 @@
 var db = require('../database.js');
 
 /**
+ * User model
+ */
+var User = function(data) {
+	this.data = data;
+};
+
+User.prototype.data = {};
+
+User.prototype.get = function(property) {
+	return this.data[property];
+};
+
+User.prototype.set = function(property, value) {
+	this.data[property] = value;
+};
+
+User.prototype.save = function(callback) {
+	db.query('UPDATE users SET name = ? WHERE id = ?', [this.get('name'), this.get('id')], function(err, results, fields) {
+		if (err) {
+			return callback(err);
+		} else {
+			return callback(null);
+		}
+	});
+};
+
+/**
  * Retrieves a user from the database using 'id'.
  */
-var findById = function(id, callback) {
-	db.query('SELECT id, name FROM users WHERE id = ?', [ id ], function(err, results, fields) {
+User.findById = function(id, callback) {
+	db.query('SELECT id, name FROM users WHERE id = ?', [id], function(err, results, fields) {
 		if (err) {
 			return callback(err, false);
 		}
 		else if (results.length == 0) {
 			return callback('User does not exist.', false);
 		} else {
-			return callback(null, results[0]);
+			return callback(null, new User(results[0]));
 		}
 	});
 };
@@ -20,7 +47,7 @@ var findById = function(id, callback) {
  * Retrieves a user from the DB using 'user.id'. If no such user
  * exists, we create a new user and store him in the database.
  */
-var findOrCreate = function(user, callback) {
+User.findOrCreate = function(user, callback) {
 	findById(user.id, function(err, result) {
 		if (err) {
 			db.query(
@@ -30,7 +57,7 @@ var findOrCreate = function(user, callback) {
 					if (err) {
 						return callback(err, false);
 					} else {
-						return callback(null, user);
+						return callback(null, new User(user));
 					}
 				}
 			);
@@ -40,5 +67,4 @@ var findOrCreate = function(user, callback) {
 	});
 };
 
-exports.findById = findById;
-exports.findOrCreate = findOrCreate;
+module.exports = User;
