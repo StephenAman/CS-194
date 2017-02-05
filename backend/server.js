@@ -105,7 +105,15 @@ app.post('/api/users', function(req, res) {
  *  DELETE: Delete user by id
  */
 app.get('/api/users/:userId', function(req, res) {
+	User.findById(req.params.userId, function(err, user) {
+		if (err) {
+			res.status(404).send();
+		} else {
+			res.send(user);	
+		}
+	});
 });
+
 app.put('/api/users/:userId', function(req, res) {
 });
 app.delete('/api/users/:userId', function(req, res) {
