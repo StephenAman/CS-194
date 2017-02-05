@@ -116,23 +116,20 @@ app.get('/api/users/:userId', function(req, res) {
 });
 
 app.put('/api/users/:userId', function(req, res) {
-	// Check that you are updating your own user.
+	// Check that you are updating your own user
 	if (req.params.userId != req.user.get("id")) {
 		res.status(401).send();
 		return;
 	}
-	User.findById(req.params.userId, function(err, user) {
-		if (err) throw err;
 
-		// Update name field
-		if (req.body.name != null) {
-			user.set("name", req.body.name);
-		}
+	// Update name field
+	if (req.body.name != null) {
+		req.user.set("name", req.body.name);
+	}
 
-		// Save user to database
-		user.save(function(err) { if (err) throw err; });
-		res.send();
-	});
+	// Save user to database
+	req.user.save(function(err) { if (err) throw err; });
+	res.send();
 });
 
 /**
