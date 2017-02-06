@@ -42,7 +42,7 @@ Mic.findAll = function(callback) {
  * Fetches a list of all open mics that are located within
  * the given geographical area.
  */
-Mic.findAllInArea = function(min_lat, min_lng, max_lat, max_lng, callback) {
+Mic.findAllInArea = function(minLat, minLng, maxLat, maxLng, callback) {
 	// TODO(joachimr): Implement
 }
 
