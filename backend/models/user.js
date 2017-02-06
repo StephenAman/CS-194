@@ -48,7 +48,7 @@ User.findById = function(id, callback) {
  * exists, we create a new user and store him in the database.
  */
 User.findOrCreate = function(user, callback) {
-	findById(user.id, function(err, result) {
+	User.findById(user.id, function(err, result) {
 		if (err) {
 			db.query(
 				'INSERT INTO users (id, name) VALUES (?, ?)', 

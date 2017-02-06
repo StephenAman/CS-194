@@ -37,7 +37,7 @@ passport.use(new FacebookStrategy(
 				return done(err, false);
 			}
 			var token = jwt.sign(
-				{ id: user.id }, config.jwt_secret
+				{ id: user.get('id') }, config.jwt_secret
 			);
 			return done(null, {token: token});
 		});
