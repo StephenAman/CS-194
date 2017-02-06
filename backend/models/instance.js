@@ -5,13 +5,13 @@ var db = require('../database.js');
  */
 var Instance = function(data) {
 	this.data = data;	
-}
+};
 
 Instance.prototype.data = {};
 
 Instance.prototype.get = function(property) {
 	return this.data[property];
-}
+};
 
 Instance.prototype.set = function(property, value) {
 	this.data[property] = value;
@@ -44,7 +44,7 @@ Instance.findAll = function(micId, callback) {
  */
 Instance.findNext = function(micId, callback) {
 	// TODO(joachimr): Implement
-}
+};
 
 /**
  * Updates this instance in the database.
@@ -58,6 +58,6 @@ Instance.prototype.save = function(callback) {
  */
 Instance.prototype.delete = function(callback) {
 	// TODO(joachimr): Implement
-}
+};
 
 module.exports = Instance;

@@ -44,7 +44,7 @@ Mic.findAll = function(callback) {
  */
 Mic.findAllInArea = function(minLat, minLng, maxLat, maxLng, callback) {
 	// TODO(joachimr): Implement
-}
+};
 
 /**
  * Updates this open mic in the database.
@@ -60,6 +60,6 @@ Mic.prototype.save = function(callback) {
  */
 Mic.prototype.delete = function(callback) {
 	// TODO(joachimr): Implement
-}
+};
 
 module.exports = Mic;

@@ -7,6 +7,7 @@ var passportJwt = require('passport-jwt');
 
 var config = require('./config.js');
 var database = require('./database.js');
+var MicController = require('./controllers/mics.js');
 var User = require('./models/user.js');
 
 var app = express();
@@ -158,11 +159,8 @@ app.delete('/api/mics/:micId', function(req, res) {
 /**
  * '/api/mics/:micId/instances'
  *  GET: Fetch all instances of this open mic
- *  POST: Create new instance
  */
 app.get('/api/mics/:micId/instances', function(req, res) {
-});
-app.post('/api/mics/:micId/instances', function(req, res) {
 });
 
 /**
