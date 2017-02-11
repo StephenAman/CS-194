@@ -1,4 +1,5 @@
 var express = require('express');
+var validate = require('express-jsonschema').validate;
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
@@ -9,6 +10,7 @@ var config = require('./config.js');
 var database = require('./database.js');
 var MicController = require('./controllers/mics.js');
 var User = require('./models/user.js');
+var schemas = require('./schemas.js');
 
 var app = express();
 
@@ -140,7 +142,8 @@ app.put('/api/users/:userId', function(req, res) {
  */
 app.get('/api/mics', function(req, res) {
 });
-app.post('/api/mics', function(req, res) {
+app.post('/api/mics', validate({body: schemas.CreateMic}), function(req, res) {
+	MicController.createMic(req, res);
 });
 
 /**
@@ -171,6 +174,27 @@ app.get('/api/mics/:micId/instances', function(req, res) {
 app.get('/api/mics/:micId/instances/:instanceId', function(req, res) {
 });
 app.put('/api/mics/:micId/instances/:instanceId', function(req, res) {
+});
+
+/**
+ * Handle invalid JSON requests
+ */
+app.use(function(err, req, res, next) {
+ 	if (err.name === 'SyntaxError') {
+ 		res.status(400).send('SyntaxError: Request contains invalid JSON.');
+ 	}
+ 	else if (err.name === 'JsonSchemaValidation' &&
+ 	   (req.xhr || req.get('Content-Type') == 'application/json')) {
+        res.status(400);
+        var responseData = {
+        	statusText: 'Bad Request',
+        	jsonSchemaValidation: true,
+       	};
+        res.json(err.validations.body);
+    } 
+    else {
+        next(err);
+    }
 });
 
 app.listen(8080, function() {

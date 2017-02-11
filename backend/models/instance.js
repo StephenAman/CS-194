@@ -18,10 +18,21 @@ Instance.prototype.set = function(property, value) {
 };
 
 /**
- * Adds a new instance to the database.
+ * Adds a new instance to the database and returns the new instance object.
  */
 Instance.create = function(instance, callback) {
-	// TODO(joachimr): Implement.
+	db.query(
+		'INSERT INTO instances SET ?', instance,
+		function(err, result) {
+			if (err) {
+				return callback(err, false);
+			} else {
+				var obj = new Instance(instance);
+				obj.set('id', result.insertId);
+				return callback(null, obj);
+			}
+		}
+	);
 };
 
 /**

@@ -18,10 +18,21 @@ Mic.prototype.set = function(property, value) {
 };
 
 /**
- * Adds a new open mic to the database.
+ * Adds a new open mic to the database and returns the new mic object.
  */
 Mic.create = function(mic, callback) {
-	// TODO(joachimr): Implement.
+	db.query(
+		'INSERT INTO mics SET ?', mic,
+		function(err, result) {
+			if (err) {
+				return callback(err, false);
+			} else {
+				var obj = new Mic(mic);
+				obj.set('id', result.insertId);
+				return callback(null, obj);
+			}
+		}
+	);
 };
 
 /**
