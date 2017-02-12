@@ -50,4 +50,16 @@ var CreateMic = {
 	}
 };
 
+var Signup = {
+	type: 'object',
+	properties: {
+		slotNumber: {
+			type: 'int',
+			required: true,
+			minimum: 0,
+		}
+	}
+}
+
 exports.CreateMic = CreateMic;
+exports.Signup = Signup;

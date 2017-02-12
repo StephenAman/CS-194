@@ -91,12 +91,20 @@ MicController.createNextInstance = function(mic) {
 		'endDate': date.add(mic.get('duration'), 'minutes')
 			.format('YYYY-MM-DD HH:mm:ss'),
 		'cancelled': false,
+		'numSlots': mic.get('numSlots'),
+		'setTime': mic.get('setTime'),
 	};
 	Instance.create(instanceData, function(err, instance) {
 		if (err) {
 			throw err;
 		}
 	});
+}
+
+MicController.canEdit = function(userId, micId) {
+	// TODO(joachimr): Implement once Mic.findOne has been added.
+	// Should fetch the mic and check whether userId == createdBy.
+	return false;
 }
 
 /**
@@ -123,14 +131,141 @@ MicController.deleteMic = function() {
 /**
  * Returns a mic instance and its signup list.
  */
-MicController.getInstance = function() {
-	// TODO(joachimr): Implement.
-};
+MicController.getInstance = function(req, res) {
+	console.log(req.hasEditPermissions);
+	MicController.getInstanceAndSignups(
+		req.params.instanceId, 
+		function(err, responseData) {
+			if (err) {
+				res.status(404).send();
+				return;
+			}
+			res.send(responseData);
+		}
+	);
+}
 
 /**
- * Updates a mic instance and its signup list.
+ * Merges an instance and its signup list into one JSON structure.
  */
-MicController.updateInstance = function() {
+MicController.getInstanceAndSignups = function(instanceId, callback) {
+	Instance.findOne(instanceId, function(err, instance) {
+		if (err) {
+			callback(err, null);
+		} else {
+			var instanceData = {
+				micId: instance.get('micId'),
+				instanceId: instance.get('id'),
+				startDate: instance.get('startDate'),
+				endDate: instance.get('endDate'),
+				numSlots: instance.get('numSlots'),
+				setTime: instance.get('setTime'),
+				cancelled: instance.get('cancelled'),
+				signups: new Array(instance.get('numSlots')).fill(null),
+			}
+			instance.getSignups(function(err, results) {
+				if (err) {
+					throw err;
+				} else {
+					results.forEach(function(row) {
+						instanceData.signups[row.slotNumber] = {userId: row.userId, name: row.name};
+					});
+					callback(false, instanceData);
+				}
+			});
+		}
+	});
+};
+
+MicController.createSignup = function(req, res) {
+	MicController.getInstanceAndSignups(req.params.instanceId, function(err, instance) {
+		if (err) {
+			res.status(404).send();
+			return;
+		} else {
+			// Check that slot is in range
+			if (req.body.slotNumber >= instance.numSlots) {
+				res.status(400).send('Slot does not exist.');
+				return;
+			}
+			// Check that slot is available
+			if (instance.signups[req.body.slotNumber] !== null) {
+				res.status(400).send('Slot has already been taken.');
+				return;
+			}
+			// Check that user isn't already signed up for a different slot
+			var found = false;
+			for (var i = 0; i < instance.signups.length; i++) {
+				if (instance.signups[i] != null && 
+					instance.signups[i].userId === req.user.get('id')) 
+				{
+					res.status(400).send('You have already signed up for a slot.');
+					return;
+				}	
+			}
+
+			// Query the DB
+			Instance.addSignup(
+				req.user.get('id'),
+				req.params.instanceId,
+				req.body.slotNumber,
+				function(err) {
+					if (err) {
+						throw err;
+					} else {
+						res.send();
+					}
+				}
+			);
+		}
+	});
+}
+
+MicController.deleteSignup = function(req, res) {
+	MicController.getInstanceAndSignups(req.params.instanceId, function(err, instance) {
+		if (err) {
+			res.status(404).send();
+			return;
+		} else {
+			// Check that slot is in range
+			var slot = req.body.slotNumber;
+			if (slot >= instance.numSlots) {
+				res.status(400).send('Slot does not exist.');
+				return;
+			}
+			// Check that slot is not available
+			if (instance.signups[slot] === null) {
+				res.status(400).send('Slot is already free.');
+				return;
+			}
+			// Check that user is authorized
+			if (!req.hasEditPermissions &&
+				req.user.get('id') !== instance.signups[slot].userId) 
+			{
+				res.status(403).send();
+				return;
+			}
+
+			// Query the DB
+			Instance.deleteSignup(
+				req.params.instanceId,
+				req.body.slotNumber,
+				function(err) {
+					if (err) {
+						throw err;
+					} else {
+						res.send();
+					}
+				}
+			);
+		}
+	});
+}
+
+/**
+ * Updates a mic instance.
+ */
+MicController.updateInstance = function(req, res) {
 	// TODO(joachimr): Implement.
 };
 

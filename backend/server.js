@@ -97,6 +97,17 @@ app.all('/api/*', passport.authenticate('jwt', { session: false }),
 );
 
 /**
+ * Set flag to indicate whether user has edit privileges to mic page
+ */
+app.all('/api/mics/:micId/*', function (req, res, next) {
+	req.hasEditPermissions = MicController.canEdit(
+		req.user.get('id'),
+		req.params.micId
+	);
+	next();
+});
+
+/**
  * '/api/users'
  *  POST: Create new user
  */
@@ -141,7 +152,9 @@ app.put('/api/users/:userId', function(req, res) {
  *  POST: Create new open mic
  */
 app.get('/api/mics', function(req, res) {
+
 });
+
 app.post('/api/mics', validate({body: schemas.CreateMic}), function(req, res) {
 	MicController.createMic(req, res);
 });
@@ -172,8 +185,21 @@ app.get('/api/mics/:micId/instances', function(req, res) {
  *  PUT: Update open mic instance
  */
 app.get('/api/mics/:micId/instances/:instanceId', function(req, res) {
+	MicController.getInstance(req, res);
 });
 app.put('/api/mics/:micId/instances/:instanceId', function(req, res) {
+});
+
+/**
+ * '/api/mics/:micId/instances/:instanceId/signups'
+ *  POST: Sign up to slot
+ *  DELETE: Delete sign up
+ */
+app.post('/api/mics/:micId/instances/:instanceId/signups', validate({body: schemas.Signup}), function(req, res) {
+	MicController.createSignup(req, res);
+});
+app.delete('/api/mics/:micId/instances/:instanceId/signups', validate({body: schemas.Signup}), function(req, res) {
+	MicController.deleteSignup(req, res);
 });
 
 /**

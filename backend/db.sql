@@ -7,6 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `mydb` ;
 
 -- -----------------------------------------------------
 -- Schema mydb
@@ -61,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`instances` (
   `startDate` DATETIME NOT NULL,
   `endDate` DATETIME NOT NULL,
   `cancelled` TINYINT(1) NOT NULL,
+  `numSlots` INT NOT NULL,
+  `setTime` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_instances_mics1_idx` (`micId` ASC),
@@ -79,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`signups` (
   `userId` VARCHAR(45) NOT NULL,
   `instanceId` INT NOT NULL,
   `slotNumber` INT NOT NULL,
-  `time` DATETIME NOT NULL,
+  `time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`instanceId`, `slotNumber`),
   INDEX `fk_signups_users1_idx` (`userId` ASC),
   INDEX `fk_signups_instances1_idx` (`instanceId` ASC),

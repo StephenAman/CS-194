@@ -39,7 +39,16 @@ Instance.create = function(instance, callback) {
  * Fetches a specific instance from the database.
  */
 Instance.findOne = function(id, callback) {
-	// TODO(joachimr): Implement
+	db.query('SELECT * FROM instances WHERE id = ?', [id], function(err, results, fields) {
+		if (err) {
+			return callback(err, false);
+		}
+		else if (results.length == 0) {
+			return callback('Instance does not exist.', false);
+		} else {
+			return callback(null, new Instance(results[0]));
+		}
+	});
 };
 
 /**
@@ -56,6 +65,60 @@ Instance.findAll = function(micId, callback) {
 Instance.findNext = function(micId, callback) {
 	// TODO(joachimr): Implement
 };
+
+/**
+ * Returns the signup list associated with this instance.
+ */
+Instance.prototype.getSignups = function(callback) {
+	db.query(
+	   'SELECT instanceId, userId, name, slotNumber \
+		FROM signups \
+		INNER JOIN users on signups.userId = users.id \
+		WHERE instanceId = ?',
+		[this.get('id')],
+		function(err, results, fields) {
+			if (err) {
+				return callback(err, false);
+			} else {
+				return callback(null, results);
+			}
+		}
+	);
+}
+
+/**
+ * Adds a new signup for this instance.
+ */
+Instance.addSignup = function(userId, instanceId, slot, callback) {
+	db.query(
+		'INSERT INTO signups (userId, instanceId, slotNumber) VALUES (?, ?, ?)',
+		[userId, instanceId, slot],
+		function(err, result) {
+			if (err) {
+				return callback(err);
+			} else {
+				return callback(false);
+			}
+		}
+	);
+}
+
+/**
+ * Deletes a signup for this instance.
+ */
+Instance.deleteSignup = function(instanceId, slot, callback) {
+	db.query(
+		'DELETE FROM signups WHERE instanceId = ? AND slotNumber = ?',
+		[instanceId, slot],
+		function(err, result) {
+			if (err) {
+				return callback(err);
+			} else {
+				return callback(false);
+			}
+		}
+	);
+}
 
 /**
  * Updates this instance in the database.
