@@ -39,14 +39,30 @@ Mic.create = function(mic, callback) {
  * Fetches a specific open mic from the database.
  */
 Mic.findOne = function(id, callback) {
-	// TODO(joachimr): Implement
+	db.query('SELECT * FROM mics WHERE id = ?', [id], function(err, results, fields) {
+		if (err) {
+			return callback(err, false);
+		}
+		else if (results.length == 0) {
+			return callback('Mic does not exist.', false);
+		} else {
+			return callback(null, new Mic(results[0]));
+		}
+	});
 };
 
 /**
  * Fetches a list of all open mics in the database.
  */
 Mic.findAll = function(callback) {
-	// TODO(joachimr): Implement
+	db.query('SELECT * FROM mics', function(err, results, fields) {
+		if (err) {
+			return callback(err, false);
+		}
+ 		return callback(
+ 			null, results.map(function(row) { return new Mic(row); })
+ 		);
+ 	});
 };
 
 /**
@@ -54,7 +70,7 @@ Mic.findAll = function(callback) {
  * the given geographical area.
  */
 Mic.findAllInArea = function(minLat, minLng, maxLat, maxLng, callback) {
-	// TODO(joachimr): Implement
+	// TODO: Implement
 };
 
 /**
@@ -62,7 +78,7 @@ Mic.findAllInArea = function(minLat, minLng, maxLat, maxLng, callback) {
  * Note that this does not update any dependent instances. 
  */
 Mic.prototype.save = function(callback) {
-	// TODO(joachimr): Implement
+	// TODO: Implement
 };
 
 /**
@@ -70,7 +86,7 @@ Mic.prototype.save = function(callback) {
  * Note that this does not delete any dependent instances.
  */
 Mic.prototype.delete = function(callback) {
-	// TODO(joachimr): Implement
+	// TODO: Implement
 };
 
 module.exports = Mic;

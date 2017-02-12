@@ -100,11 +100,14 @@ app.all('/api/*', passport.authenticate('jwt', { session: false }),
  * Set flag to indicate whether user has edit privileges to mic page
  */
 app.all('/api/mics/:micId/*', function (req, res, next) {
-	req.hasEditPermissions = MicController.canEdit(
+	MicController.canEdit(
 		req.user.get('id'),
-		req.params.micId
+		req.params.micId, 
+		function(result) {
+			req.hasEditPermissions = result;
+			next();
+		}
 	);
-	next();
 });
 
 /**
@@ -152,7 +155,7 @@ app.put('/api/users/:userId', function(req, res) {
  *  POST: Create new open mic
  */
 app.get('/api/mics', function(req, res) {
-
+	MicController.getMics(req, res);
 });
 
 app.post('/api/mics', validate({body: schemas.CreateMic}), function(req, res) {
@@ -166,6 +169,7 @@ app.post('/api/mics', validate({body: schemas.CreateMic}), function(req, res) {
  *  DELETE: Delete open mic by id, and all dependent instances
  */
 app.get('/api/mics/:micId', function(req, res) {
+	MicController.getMic(req, res);
 });
 app.put('/api/mics/:micId', function(req, res) {
 });
