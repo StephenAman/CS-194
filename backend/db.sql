@@ -7,6 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `mydb` ;
 
 -- -----------------------------------------------------
 -- Schema mydb
@@ -30,22 +31,22 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`mics` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `created_by` VARCHAR(45) NOT NULL,
-  `mic_name` VARCHAR(255) NOT NULL,
-  `venue_name` VARCHAR(255) NOT NULL,
-  `venue_address` VARCHAR(255) NOT NULL,
-  `venue_lat` FLOAT NOT NULL,
-  `venue_lng` FLOAT NOT NULL,
-  `start_time` VARCHAR(45) NOT NULL COMMENT 'Formatted string following ISO 8601. \"hh:mm:ss\"\n',
+  `createdBy` VARCHAR(45) NOT NULL,
+  `micName` VARCHAR(255) NOT NULL,
+  `venueName` VARCHAR(255) NOT NULL,
+  `venueAddress` VARCHAR(255) NOT NULL,
+  `venueLat` FLOAT NOT NULL,
+  `venueLng` FLOAT NOT NULL,
+  `startDate` DATETIME NOT NULL COMMENT 'Formatted string following ISO 8601. \"hh:mm:ss\"\n',
   `duration` INT NOT NULL COMMENT 'In seconds',
-  `meeting_basis` VARCHAR(45) NOT NULL,
-  `set_time` INT NOT NULL,
-  `num_slots` INT NOT NULL,
+  `meetingBasis` VARCHAR(45) NOT NULL,
+  `setTime` INT NOT NULL,
+  `numSlots` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  INDEX `fk_mics_users_idx` (`created_by` ASC),
+  INDEX `fk_mics_users_idx` (`createdBy` ASC),
   CONSTRAINT `fk_mics_users`
-    FOREIGN KEY (`created_by`)
+    FOREIGN KEY (`createdBy`)
     REFERENCES `mydb`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -57,14 +58,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`instances` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `mic_id` INT NOT NULL,
-  `date` DATETIME NOT NULL,
-  `status` VARCHAR(45) NOT NULL,
+  `micId` INT NOT NULL,
+  `startDate` DATETIME NOT NULL,
+  `endDate` DATETIME NOT NULL,
+  `cancelled` TINYINT(1) NOT NULL,
+  `numSlots` INT NOT NULL,
+  `setTime` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  INDEX `fk_instances_mics1_idx` (`mic_id` ASC),
+  INDEX `fk_instances_mics1_idx` (`micId` ASC),
   CONSTRAINT `fk_instances_mics1`
-    FOREIGN KEY (`mic_id`)
+    FOREIGN KEY (`micId`)
     REFERENCES `mydb`.`mics` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -75,20 +79,20 @@ ENGINE = InnoDB;
 -- Table `mydb`.`signups`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`signups` (
-  `user_id` VARCHAR(45) NOT NULL,
-  `instance_id` INT NOT NULL,
-  `slot_number` INT NOT NULL,
-  `time` DATETIME NOT NULL,
-  PRIMARY KEY (`instance_id`, `slot_number`),
-  INDEX `fk_signups_users1_idx` (`user_id` ASC),
-  INDEX `fk_signups_instances1_idx` (`instance_id` ASC),
+  `userId` VARCHAR(45) NOT NULL,
+  `instanceId` INT NOT NULL,
+  `slotNumber` INT NOT NULL,
+  `time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`instanceId`, `slotNumber`),
+  INDEX `fk_signups_users1_idx` (`userId` ASC),
+  INDEX `fk_signups_instances1_idx` (`instanceId` ASC),
   CONSTRAINT `fk_signups_users1`
-    FOREIGN KEY (`user_id`)
+    FOREIGN KEY (`userId`)
     REFERENCES `mydb`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_signups_instances1`
-    FOREIGN KEY (`instance_id`)
+    FOREIGN KEY (`instanceId`)
     REFERENCES `mydb`.`instances` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)

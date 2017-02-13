@@ -1,4 +1,5 @@
 var express = require('express');
+var validate = require('express-jsonschema').validate;
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
@@ -9,6 +10,7 @@ var config = require('./config.js');
 var database = require('./database.js');
 var MicController = require('./controllers/mics.js');
 var User = require('./models/user.js');
+var schemas = require('./schemas.js');
 
 var app = express();
 
@@ -95,6 +97,20 @@ app.all('/api/*', passport.authenticate('jwt', { session: false }),
 );
 
 /**
+ * Set flag to indicate whether user has edit privileges to mic page
+ */
+app.all('/api/mics/:micId/*', function (req, res, next) {
+	MicController.canEdit(
+		req.user.get('id'),
+		req.params.micId, 
+		function(result) {
+			req.hasEditPermissions = result;
+			next();
+		}
+	);
+});
+
+/**
  * '/api/users'
  *  POST: Create new user
  */
@@ -139,8 +155,11 @@ app.put('/api/users/:userId', function(req, res) {
  *  POST: Create new open mic
  */
 app.get('/api/mics', function(req, res) {
+	MicController.getMics(req, res);
 });
-app.post('/api/mics', function(req, res) {
+
+app.post('/api/mics', validate({body: schemas.CreateMic}), function(req, res) {
+	MicController.createMic(req, res);
 });
 
 /**
@@ -150,6 +169,7 @@ app.post('/api/mics', function(req, res) {
  *  DELETE: Delete open mic by id, and all dependent instances
  */
 app.get('/api/mics/:micId', function(req, res) {
+	MicController.getMic(req, res);
 });
 app.put('/api/mics/:micId', function(req, res) {
 });
@@ -169,8 +189,42 @@ app.get('/api/mics/:micId/instances', function(req, res) {
  *  PUT: Update open mic instance
  */
 app.get('/api/mics/:micId/instances/:instanceId', function(req, res) {
+	MicController.getInstance(req, res);
 });
 app.put('/api/mics/:micId/instances/:instanceId', function(req, res) {
+});
+
+/**
+ * '/api/mics/:micId/instances/:instanceId/signups'
+ *  POST: Sign up to slot
+ *  DELETE: Delete sign up
+ */
+app.post('/api/mics/:micId/instances/:instanceId/signups', validate({body: schemas.Signup}), function(req, res) {
+	MicController.createSignup(req, res);
+});
+app.delete('/api/mics/:micId/instances/:instanceId/signups', validate({body: schemas.Signup}), function(req, res) {
+	MicController.deleteSignup(req, res);
+});
+
+/**
+ * Handle invalid JSON requests
+ */
+app.use(function(err, req, res, next) {
+ 	if (err.name === 'SyntaxError') {
+ 		res.status(400).send('SyntaxError: Request contains invalid JSON.');
+ 	}
+ 	else if (err.name === 'JsonSchemaValidation' &&
+ 	   (req.xhr || req.get('Content-Type') == 'application/json')) {
+        res.status(400);
+        var responseData = {
+        	statusText: 'Bad Request',
+        	jsonSchemaValidation: true,
+       	};
+        res.json(err.validations.body);
+    } 
+    else {
+        next(err);
+    }
 });
 
 app.listen(8080, function() {
