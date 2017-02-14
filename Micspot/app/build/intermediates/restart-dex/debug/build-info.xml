@@ -5,40 +5,33 @@
     density="hdpi"
     format="8"
     plugin-version="2.2.3"
-    timestamp="1725555613804718"
+    timestamp="1739374168184205"
     token="2961123467024410089"
-    verifier="COLD_SWAP_REQUESTED" >
+    verifier="FULL_BUILD_REQUESTED" >
 
     <task
         name="javac"
-        duration="346" />
+        duration="1921" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="99" />
+        duration="2205" />
     <task
         name="verifier"
-        duration="5" />
+        duration="346" />
 
     <artifact
-        location="C:\Users\pball\Documents\CS\CS194\CS-194\Micspot\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_9\classes.dex"
-        type="DEX" />
+        location="C:\Users\pball\Documents\CS\CS194\CS-194\Micspot\app\build\outputs\apk\app-debug.apk"
+        type="MAIN" />
 
     <build
-        timestamp="1725428184413538"
+        timestamp="1739374168184205"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
             location="C:\Users\pball\Documents\CS\CS194\CS-194\Micspot\app\build\outputs\apk\app-debug.apk"
             type="MAIN" />
-    </build>
-    <build
-        timestamp="1725555613804718"
-        verifier="COLD_SWAP_REQUESTED" >
-        <artifact
-            location="C:\Users\pball\Documents\CS\CS194\CS-194\Micspot\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_9\classes.dex"
-            type="DEX" />
     </build>
 
 </instant-run>
