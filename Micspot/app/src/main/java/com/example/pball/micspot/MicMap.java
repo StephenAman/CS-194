@@ -1,7 +1,15 @@
 package com.example.pball.micspot;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -25,7 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MicMap extends FragmentActivity implements OnMapReadyCallback {
@@ -61,10 +72,10 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        /*
+        /*TODO: Override getHeaders() to add auth to request
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
                 GET_MAP_MICS,
-                paramArray,
+                null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray micArray) {
@@ -73,7 +84,6 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
                                 JSONObject jsonobject = micArray.getJSONObject(i);
                                 int micId = jsonobject.getInt("micId");
                                 String status = jsonobject.getString("status");
-                                System.out.println("Bodied!");
                                 double venLat = jsonobject.getDouble("venueLat");
                                 double venLong = jsonobject.getDouble("venueLat");
                                 System.out.println("got here, check it: " + venLat);
@@ -105,7 +115,6 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
     }
 
 
@@ -127,6 +136,50 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Nullable
+            @Override
+            public View getInfoWindow(@NonNull Marker marker) {
+                return null;
+            }
+
+            public View getInfoContents(Marker marker){
+                LinearLayout parent = new LinearLayout(MicMap.this);
+                parent.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                parent.setOrientation(LinearLayout.VERTICAL);
+
+                TextView windowDetails = new TextView(MicMap.this);
+                //TODO: Get mic data from db
+                //query using the mic id and the other url, get venue
+                //basis, start time, duration, set length
+                JSONObject jsonMic = new JSONObject();
+                try {
+                    jsonMic.put("basis", "weekly");
+                    jsonMic.put("micName", "Brainwash");
+                    jsonMic.put("startDate", "2017-02-13T20:00:00.000");
+                    jsonMic.put("duration", 120);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    windowDetails = populateText(windowDetails, jsonMic);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                parent.addView(windowDetails);
+
+                Button signupButton = new Button(MicMap.this);
+                signupButton.setText("Sign Up");
+
+                parent.addView(signupButton);
+
+                return parent;
+            }
+        });
     }
 
     private void addMicsToMap() throws JSONException {
@@ -141,5 +194,31 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
                     .title("mic1"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(micLocation));
         }
+    }
+
+    private TextView populateText(TextView windowText, JSONObject jsonMic) throws JSONException {
+        String basis = (String) jsonMic.get("basis");
+        String name = (String) jsonMic.get("micName");
+        String dateStr = (String) jsonMic.get("startDate");
+        int duration = (int) jsonMic.get("duration");
+        String producer = "Pete"; //(String) jsonMic.get("createdBy");//TODO: make sure this works
+        windowText.append(name + "\n");
+        int startHour = Integer.parseInt(dateStr.substring(11, 13));
+        int startMinute = Integer.parseInt(dateStr.substring(14,16));
+        if(startHour > 12) {//TODO: pm
+            startHour -= 12;
+            int endHour = startHour + (duration/60);//assumes no mics go past midnigth
+            String startTime = startHour + ":" + startMinute + "0";
+            String endTime;
+            if(duration % 60 == 0) {
+                endTime = endHour + ":" + startMinute + "0";
+            } else {
+                int endMinute = (startMinute + (duration % 60)) % 60;
+                endTime = endHour + ":" + endMinute + "0";
+            }
+            windowText.append(basis + ", " + startTime + "-" + endTime + " PM\n");
+        }
+        windowText.append("Producer: " + producer);
+        return windowText;
     }
 }
