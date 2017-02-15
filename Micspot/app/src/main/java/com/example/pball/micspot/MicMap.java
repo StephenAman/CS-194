@@ -11,14 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -69,8 +61,6 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
         micArray.put(mic2);
 
         System.out.println(micArray.toString());
-
-        RequestQueue queue = Volley.newRequestQueue(this);
 
         /*TODO: Override getHeaders() to add auth to request
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
