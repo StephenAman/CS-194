@@ -40,11 +40,12 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     private MicSpotService service;
     private Map<String, MicSpotService.MicSummary> mics;
+    static public final String PREF_FILE = "SharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        service = new MicSpotService(this);
         mics = new HashMap<String, MicSpotService.MicSummary>();
+        service = new MicSpotService();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
@@ -87,7 +88,9 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
         mMap = googleMap;
 
         try {
-            service.Test();
+            String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
+            System.out.println("JWT is: " + jwt);
+            service.GetAllMics(jwt, this);
         } catch (IOException e) {
             e.printStackTrace();
         }

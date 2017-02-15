@@ -137,7 +137,8 @@ app.post('/auth/mobile', validate({body: schemas.MobileAuth}), function(req, res
 								var token = jwt.sign(
 									{ id: user.get('id') }, config.jwt_secret
 								);
-								return res.send(token);
+								res.set('Content-Type', 'application/json');
+								return res.send('{"jwt": "' + token + '"}');
 							});
 						}
 					);
