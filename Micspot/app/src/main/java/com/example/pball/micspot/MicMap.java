@@ -1,5 +1,6 @@
 package com.example.pball.micspot;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,12 +36,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MicMap extends FragmentActivity implements OnMapReadyCallback,
+public class MicMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener,
                                                         Callback<List<MicSpotService.MicSummary>> {
     private GoogleMap mMap;
     private MicSpotService service;
     private Map<String, MicSpotService.MicSummary> mics;
     static public final String PREF_FILE = "SharedPrefs";
+    private int micId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,15 +112,30 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
 
                 TextView windowDetails = new TextView(MicMap.this);
                 MicSpotService.MicSummary mic = mics.get(marker.getTitle());
+                micId = Integer.parseInt(mic.micId);//used to pass into signup intent
                 windowDetails = populateText(windowDetails, mic);
 
                 parent.addView(windowDetails);
                 Button signupButton = new Button(MicMap.this);
                 signupButton.setText("Sign Up");
+                /*
+                signupButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        System.out.println("Chicks");
+                        //Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
+                        System.out.println("chicks????");
+                        //micIntent.putExtra("micId", micId); //Gives micId to signup to query db
+                        System.out.println("also chicks");
+                        //MicMap.this.startActivity(micIntent);
+                    }
+                });
+                */
                 parent.addView(signupButton);
                 return parent;
             }
         });
+
+        mMap.setOnInfoWindowClickListener(this);
     }
 
     /**
@@ -156,5 +173,12 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
         windowText.append("Producer: " + mic.createdBy + "\n");
         windowText.append("Next event: " + dateString);
         return windowText;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
+        micIntent.putExtra("micId", micId); //Gives micId to signup to query db
+        MicMap.this.startActivity(micIntent);
     }
 }

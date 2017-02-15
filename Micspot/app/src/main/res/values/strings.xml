@@ -93,4 +93,5 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">1724080204588083</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
 </resources>

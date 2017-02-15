@@ -34,19 +34,21 @@
 
         <activity
             android:name=".MicMap"
-            android:label="@string/title_activity_mic_map">
-        </activity>
-        <activity
-            android:name=".LoginActivity">
+            android:label="@string/title_activity_mic_map"></activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MicDetails"
             android:label="@string/title_activity_mic_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/title_activity_sign_up"></activity>
     </application>
 
 </manifest>
