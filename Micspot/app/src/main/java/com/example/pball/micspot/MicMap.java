@@ -24,10 +24,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -43,43 +41,16 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
     private MicSpotService service;
     private Map<String, MicSpotService.MicSummary> mics;
 
-    JSONArray micArray;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         service = new MicSpotService(this);
         mics = new HashMap<String, MicSpotService.MicSummary>();
-
-        System.out.println("Yo im here");
-        JSONObject mic1 = new JSONObject();
-        JSONObject mic2 = new JSONObject();
-        micArray = new JSONArray();
-        try {
-            mic1.put("micId", 1);
-            mic1.put("status", "yellow");
-            mic1.put("venueLat", 37.776401);
-            mic1.put("venueLng", -122.408711);
-            mic2.put("micId", 2);
-            mic2.put("status", "orange");
-            mic2.put("venueLat", 37.752687);
-            mic2.put("venueLng", -122.41386);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        micArray.put(mic1);
-        micArray.put(mic2);
-
-        System.out.println(micArray.toString());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
     }
 
     @Override
@@ -99,7 +70,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onFailure(Call<List<MicSpotService.MicSummary>> call,
                           Throwable t) {
-        // TODO(joachimr): Implement.
+        t.printStackTrace();
     }
 
     /**
@@ -135,33 +106,13 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
                 parent.setOrientation(LinearLayout.VERTICAL);
 
                 TextView windowDetails = new TextView(MicMap.this);
-                //TODO: Get mic data from db
-                //query using the mic id and the other url, get venue
-                //basis, start time, duration, set length
-                JSONObject jsonMic = new JSONObject();
-                try {
-                    jsonMic.put("basis", "weekly");
-                    jsonMic.put("micName", "Brainwash");
-                    jsonMic.put("startDate", "2017-02-13T20:00:00.000");
-                    jsonMic.put("duration", 120);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    windowDetails = populateText(windowDetails, jsonMic);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                MicSpotService.MicSummary mic = mics.get(marker.getTitle());
+                windowDetails = populateText(windowDetails, mic);
 
                 parent.addView(windowDetails);
-
                 Button signupButton = new Button(MicMap.this);
                 signupButton.setText("Sign Up");
-                // parent.add
                 parent.addView(signupButton);
-                // parent.addView(signupButton);
-
                 return parent;
             }
         });
@@ -189,29 +140,18 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback,
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
     }
 
-    private TextView populateText(TextView windowText, JSONObject jsonMic) throws JSONException {
-        String basis = (String) jsonMic.get("basis");
-        String name = (String) jsonMic.get("micName");
-        String dateStr = (String) jsonMic.get("startDate");
-        int duration = (int) jsonMic.get("duration");
-        String producer = "Pete"; //(String) jsonMic.get("createdBy");//TODO: make sure this works
-        windowText.append(name + "\n");
-        int startHour = Integer.parseInt(dateStr.substring(11, 13));
-        int startMinute = Integer.parseInt(dateStr.substring(14,16));
-        if(startHour > 12) {//TODO: pm
-            startHour -= 12;
-            int endHour = startHour + (duration/60);//assumes no mics go past midnigth
-            String startTime = startHour + ":" + startMinute + "0";
-            String endTime;
-            if(duration % 60 == 0) {
-                endTime = endHour + ":" + startMinute + "0";
-            } else {
-                int endMinute = (startMinute + (duration % 60)) % 60;
-                endTime = endHour + ":" + endMinute + "0";
-            }
-            windowText.append(basis + ", " + startTime + "-" + endTime + " PM\n");
-        }
-        windowText.append("Producer: " + producer);
+    private TextView populateText(TextView windowText, MicSpotService.MicSummary mic) {
+        DateFormat date = new SimpleDateFormat("MMMM dd");
+        DateFormat time = new SimpleDateFormat("h:mm a");
+        String dateString = date.format(mic.startDate);
+        String timeString = time.format(mic.startDate) + "-" + time.format(mic.endDate);
+        String basis = mic.meetingBasis.substring(0, 1).toUpperCase() +
+                       mic.meetingBasis.substring(1);
+
+        windowText.append(mic.micName + "\n");
+        windowText.append(basis + " " + timeString + "\n");
+        windowText.append("Producer: " + mic.createdBy + "\n");
+        windowText.append("Next event: " + dateString);
         return windowText;
     }
 }
