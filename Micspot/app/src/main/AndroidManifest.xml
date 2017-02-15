@@ -28,16 +28,25 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".MicMap"
             android:label="@string/title_activity_mic_map">
+        </activity>
+        <activity
+            android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MicDetails"
+            android:label="@string/title_activity_mic_details"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

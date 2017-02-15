@@ -1,5 +1,6 @@
 package com.example.pball.micspot;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -16,8 +17,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -25,20 +28,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.io.IOException;
 
-public class MicMap extends FragmentActivity implements OnMapReadyCallback {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class MicMap extends FragmentActivity implements OnMapReadyCallback,
+                                                        Callback<List<MicSpotService.MicSummary>> {
     private GoogleMap mMap;
-    private final String GET_MAP_MICS = "http://138.68.7.110:8080/api/mics";//move this probably
+    private MicSpotService service;
+    private Map<String, MicSpotService.MicSummary> mics;
+
     JSONArray micArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        service = new MicSpotService(this);
+        mics = new HashMap<String, MicSpotService.MicSummary>();
+
         System.out.println("Yo im here");
         JSONObject mic1 = new JSONObject();
         JSONObject mic2 = new JSONObject();
@@ -62,51 +73,34 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
 
         System.out.println(micArray.toString());
 
-        /*TODO: Override getHeaders() to add auth to request
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
-                GET_MAP_MICS,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray micArray) {
-                        try {
-                            for (int i = 0; i < micArray.length(); i++) {
-                                JSONObject jsonobject = micArray.getJSONObject(i);
-                                int micId = jsonobject.getInt("micId");
-                                String status = jsonobject.getString("status");
-                                double venLat = jsonobject.getDouble("venueLat");
-                                double venLong = jsonobject.getDouble("venueLat");
-                                System.out.println("got here, check it: " + venLat);
-                            }
-                        }catch (JSONException e) {
-                                e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                System.out.println(e);
-            });{
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String,String> map = new HashMap<String, String>();
-                //Add your headers here
-                return map;
-            }
-        };
-
-        queue.add(request);
-        queue.start();
-        */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
     }
 
+    @Override
+    public void onResponse(Call<List<MicSpotService.MicSummary>> call,
+                           Response<List<MicSpotService.MicSummary>> response) {
+        if (response.isSuccessful()) {
+            // Store response in mic map
+            mics.clear();
+            for (MicSpotService.MicSummary mic  : response.body()) {
+                mics.put(mic.micId, mic);
+            }
+            // Refresh map markers
+            addMicsToMap(response.body());
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<MicSpotService.MicSummary>> call,
+                          Throwable t) {
+        // TODO(joachimr): Implement.
+    }
 
     /**
      * Manipulates the map once available.
@@ -122,8 +116,8 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
         mMap = googleMap;
 
         try {
-            addMicsToMap();
-        } catch (JSONException e) {
+            service.Test();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -164,26 +158,35 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback {
 
                 Button signupButton = new Button(MicMap.this);
                 signupButton.setText("Sign Up");
-
+                // parent.add
                 parent.addView(signupButton);
+                // parent.addView(signupButton);
 
                 return parent;
             }
         });
     }
 
-    private void addMicsToMap() throws JSONException {
-        for(int i = 0; i < micArray.length(); i++){
-            JSONObject mic = (JSONObject) micArray.get(i);
-            LatLng micLocation = new LatLng(mic.getDouble("venueLat"), mic.getDouble("venueLng"));
+    /**
+     * Clears existing markers and adds markers for the given mics.
+     * The camera position is moved to include all the markers.
+     */
+    private void addMicsToMap(List<MicSpotService.MicSummary> mics) {
+        mMap.clear();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (MicSpotService.MicSummary mic : mics) {
+            LatLng micLocation = new LatLng(mic.venueLat, mic.venueLng);
             MarkerOptions marker = new MarkerOptions();
-            String status = mic.getString("status");
-            if(status.equals("yellow")) marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            else marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-            mMap.addMarker(marker.position(micLocation)
-                    .title("mic1"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(micLocation));
+            float markerColor = BitmapDescriptorFactory.HUE_ORANGE;
+            if (mic.status.equals("yellow")) {
+                markerColor = BitmapDescriptorFactory.HUE_YELLOW;
+            }
+            marker.icon(BitmapDescriptorFactory.defaultMarker(markerColor));
+            builder.include(micLocation);
+            mMap.addMarker(marker.position(micLocation).title(mic.micId));
         }
+        int padding = 10;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
     }
 
     private TextView populateText(TextView windowText, JSONObject jsonMic) throws JSONException {
