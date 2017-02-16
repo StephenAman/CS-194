@@ -1,3 +1,16 @@
+var MobileAuth = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			required: true
+		},
+		token: {
+			type: 'string',
+			required: true
+		}
+	}
+}
 
 var CreateMic = {
 	type: 'object',
@@ -61,5 +74,6 @@ var Signup = {
 	}
 }
 
+exports.MobileAuth = MobileAuth;
 exports.CreateMic = CreateMic;
 exports.Signup = Signup;

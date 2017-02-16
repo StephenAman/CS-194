@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var passportFacebook = require('passport-facebook');
 var passportJwt = require('passport-jwt');
+var request = require('request');
 
 var config = require('./config.js');
 var database = require('./database.js');
@@ -85,6 +86,66 @@ app.get('/', function(req, res) {
 
 app.get('/secret', passport.authenticate('jwt', { session: false }), function(req, res) {
 	res.send('You are logged in!');
+});
+
+/**
+ * This function is used by the Android client to log users in.
+ * POST: Exchange a FB token with a JWT.
+ *
+ * TODO: Make this callback-mess nicer.
+ */
+app.post('/auth/mobile', validate({body: schemas.MobileAuth}), function(req, res) {
+	// Get app token from FB
+	request(
+		''.concat('https://graph.facebook.com/oauth/access_token?client_id=', 
+			    config.fb_client_id, '&client_secret=', config.fb_client_secret, 
+			    '&grant_type=client_credentials'),
+		function(error, response, body) {
+			if (error) {
+				return res.status(500).send();
+			}
+			access_token = body.substring(13);
+
+			// Use app token to inspect user-provided token
+			request(
+				''.concat('https://graph.facebook.com/debug_token?input_token=',
+						  req.body.token, '&access_token=', access_token),
+				function(error, response, body) {
+					if (error) {
+						return res.status(500).send();
+					}
+					var data = JSON.parse(body);
+					// Reject if token or id is invalid
+					if (!data.data.is_valid || data.data.user_id !== req.body.id) {
+						return res.status(401).send();
+					}
+
+					// Retrieve the name of the user
+					request(
+						'https://graph.facebook.com/v2.8/' + req.body.id,
+						function(error, response, body) {
+							if (error) {
+								return res.status(500).send();
+							}
+							name = JSON.parse(body).name;
+							User.findOrCreate({id: req.body.id, name: name}, function(err, user) {
+								if (err) {
+									return res.status(500).send();
+								}
+
+								// Create, sign and return JWT
+								var token = jwt.sign(
+									{ id: user.get('id') }, config.jwt_secret
+								);
+								res.set('Content-Type', 'application/json');
+								return res.send('{"jwt": "' + token + '"}');
+							});
+						}
+					);
+				}
+			);
+		}
+	);
 });
 
 /**

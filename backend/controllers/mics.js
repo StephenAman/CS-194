@@ -2,6 +2,7 @@ var moment = require('moment');
 
 var Instance = require('../models/instance.js');
 var Mic = require('../models/mic.js');
+var User = require('../models/user.js');
 
 /**
  * MicController is responsible for handling API requests that rely upon
@@ -353,24 +354,36 @@ GetMicSummary = function(mic) {
 				if (err) {
 					reject(err);
 				} else {
-					// Determine status of the next instance.
-					// This is 'green' if the event is happening in less
-					// than 24 hours, and 'yellow' if it is happening in more
-					// than 24 hours.
-					now = moment();
-					var status = 'yellow';
-					var begin = moment(instance.get('startDate')).subtract(24, 'hours');
-					var end = moment(instance.get('endDate'));
-					if (now.isBetween(begin, end)) {
-						status = 'green';
-					}
-					data = {
-						micId: mic.get('id'),
-						status: status,
-						venueLat: mic.get('venueLat'),
-						venueLng: mic.get('venueLng'),
-					}
-					resolve(data);
+					// Fetch the name of the person who created the mic
+					User.findById(mic.get('createdBy'), function(err, user) {
+						if (err) {
+							reject(err);
+						} else {
+							// Determine status of the next instance.
+							// This is 'green' if the event is happening in less
+							// than 24 hours, and 'yellow' if it is happening in more
+							// than 24 hours.
+							now = moment();
+							var status = 'yellow';
+							var begin = moment(instance.get('startDate')).subtract(24, 'hours');
+							var end = moment(instance.get('endDate'));
+							if (now.isBetween(begin, end)) {
+								status = 'green';
+							}
+							data = {
+								micId: mic.get('id'),
+								status: status,
+								venueLat: mic.get('venueLat'),
+								venueLng: mic.get('venueLng'),
+								micName: mic.get('micName'),
+								createdBy: user.get('name'),
+								meetingBasis: mic.get('meetingBasis'),
+								startDate: instance.get('startDate'),
+								endDate: instance.get('endDate')
+							}
+							resolve(data);
+						}
+					});
 				}
 			});
 		});
