@@ -141,7 +141,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
             builder.include(micLocation);
             mMap.addMarker(marker.position(micLocation).title(mic.micId));
         }
-        int padding = 10;
+        int padding = 100;
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
     }
 
@@ -165,5 +165,10 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
         Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
         micIntent.putExtra("micId", marker.getTitle()); //Gives micId to signup to query db
         MicMap.this.startActivity(micIntent);
+    }
+
+    public void createMic(View view) {
+        Intent intent = new Intent(this, CreateMic.class);
+        startActivity(intent);
     }
 }
