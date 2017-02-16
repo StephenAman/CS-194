@@ -45,7 +45,8 @@
                 android:text="Select date"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/date_button" />
+                android:id="@+id/date_button"
+                android:onClick="showDatePicker"/>
 
         </LinearLayout>
 
@@ -67,10 +68,11 @@
                 android:textAlignment="textStart" />
 
             <Button
-                android:text="Select Time"
+                android:text="Select time"
                 android:layout_height="wrap_content"
                 android:id="@+id/time_button"
-                android:layout_width="130dp" />
+                android:layout_width="130dp"
+                android:onClick="showTimePicker"/>
         </LinearLayout>
 
         <LinearLayout
@@ -92,7 +94,8 @@
                 android:text="Select place"
                 android:layout_height="wrap_content"
                 android:id="@+id/place_button"
-                android:layout_width="130dp" />
+                android:layout_width="130dp"
+                android:onClick="showPlacePicker" />
         </LinearLayout>
 
         <View
