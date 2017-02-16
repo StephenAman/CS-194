@@ -9,9 +9,11 @@ import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.http.HTTP;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
+import retrofit2.http.DELETE;
 import retrofit2.http.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -134,6 +136,11 @@ public final class MicSpotService {
         }
     }
 
+    public static class SignupSlot {
+        public final String slotNumber;
+        public SignupSlot(String slotNumber ) { this.slotNumber = slotNumber; }
+    }
+
     public interface MicClient {
         @POST("/auth/mobile")
         Call<JWTString> getJWT(@Body FBToken token);
@@ -143,6 +150,14 @@ public final class MicSpotService {
 
         @GET("/api/mics/{id}")
         Call<Mic> mic(@Path("id") String micId);
+
+        @POST("/api/mics/{micId}/instances/{instanceId}/signups")
+        Call<Void> addSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
+                             @Body SignupSlot slot);
+
+        @HTTP(method = "DELETE", path = "/api/mics/{micId}/instances/{instanceId}/signups", hasBody = true)
+        Call<Void> removeSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
+                                @Body SignupSlot slot);
     }
 
     public void getAllMics(MicMap map, String jwt) throws IOException {
