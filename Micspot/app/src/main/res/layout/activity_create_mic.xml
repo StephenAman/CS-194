@@ -233,7 +233,8 @@
             android:text="Create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/create_button" />
+            android:id="@+id/create_button"
+            android:onClick="tryCreateActivity" />
 
     </LinearLayout>
 

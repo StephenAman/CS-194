@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -43,7 +46,11 @@ public class CreateMic extends AppCompatActivity {
         timeField.setKeyListener(null);
         addressField.setKeyListener(null);
 
-        // Configure text fields
+        // Configure spinner
+        Spinner spinner = (Spinner) findViewById(R.id.mic_meeting_basis_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.meeting_basis_options, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 
 
@@ -104,5 +111,24 @@ public class CreateMic extends AppCompatActivity {
                 addressField.setText(place.getAddress());
             }
         }
+    }
+
+    public void tryCreateActivity(View v) {
+        EditText nameField = (EditText) findViewById(R.id.mic_name_field);
+        EditText durationField = (EditText) findViewById(R.id.mic_duration_field);
+        EditText setTimeField = (EditText) findViewById(R.id.mic_set_time_field);
+        EditText numSlotsField = (EditText) findViewById(R.id.mic_num_slots_field);
+        if (
+                isEmpty(dateField) || isEmpty(timeField) || isEmpty(addressField) ||
+                isEmpty(nameField) || isEmpty(durationField) || isEmpty(setTimeField) ||
+                isEmpty(numSlotsField)) {
+            Toast toast = Toast.makeText(this, "All fields must be filled out", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+    }
+
+    private boolean isEmpty(EditText text) {
+        return text.getText().toString().trim().length() == 0;
     }
 }
