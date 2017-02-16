@@ -43,10 +43,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MicDetails"
-            android:label="@string/title_activity_mic_details"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up" />
         <activity
