@@ -74,6 +74,24 @@ Mic.findAllInArea = function(minLat, minLng, maxLat, maxLng, callback) {
 };
 
 /**
+ * Returns true if the mic is repeating, false otherwise.
+ */
+Mic.prototype.isRepeating = function() {
+	if (this.get('meetingBasis') == null) {
+		return false;
+	}
+	switch(this.get('meetingBasis').toLowerCase()) {
+		case 'daily':
+		case 'weekly':
+		case 'biweekly':
+		case 'monthly':
+			return true;
+		default:
+			return false;
+	}
+}
+
+/**
  * Updates this open mic in the database.
  * Note that this does not update any dependent instances. 
  */
