@@ -42,7 +42,6 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     private MicSpotService service;
     private Map<String, MicSpotService.MicSummary> mics;
     static public final String PREF_FILE = "SharedPrefs";
-    private int micId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +90,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
 
         try {
             String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
-            System.out.println("JWT is: " + jwt);
-            service.GetAllMics(jwt, this);
+            service.getAllMics(this, jwt);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -112,24 +110,11 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
 
                 TextView windowDetails = new TextView(MicMap.this);
                 MicSpotService.MicSummary mic = mics.get(marker.getTitle());
-                micId = Integer.parseInt(mic.micId);//used to pass into signup intent
                 windowDetails = populateText(windowDetails, mic);
 
                 parent.addView(windowDetails);
                 Button signupButton = new Button(MicMap.this);
                 signupButton.setText("Sign Up");
-                /*
-                signupButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        System.out.println("Chicks");
-                        //Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
-                        System.out.println("chicks????");
-                        //micIntent.putExtra("micId", micId); //Gives micId to signup to query db
-                        System.out.println("also chicks");
-                        //MicMap.this.startActivity(micIntent);
-                    }
-                });
-                */
                 parent.addView(signupButton);
                 return parent;
             }
@@ -178,7 +163,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     @Override
     public void onInfoWindowClick(Marker marker) {
         Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
-        micIntent.putExtra("micId", micId); //Gives micId to signup to query db
+        micIntent.putExtra("micId", marker.getTitle()); //Gives micId to signup to query db
         MicMap.this.startActivity(micIntent);
     }
 }

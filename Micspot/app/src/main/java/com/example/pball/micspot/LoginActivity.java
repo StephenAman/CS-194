@@ -36,6 +36,10 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        SharedPreferences.Editor editor =
+                                getSharedPreferences(PREF_FILE, MODE_PRIVATE).edit();
+                        editor.putString("userId", loginResult.getAccessToken().getUserId());
+                        editor.apply();
                         MicSpotService.GetJWT(
                                 loginResult.getAccessToken().getUserId(),
                                 loginResult.getAccessToken().getToken(),

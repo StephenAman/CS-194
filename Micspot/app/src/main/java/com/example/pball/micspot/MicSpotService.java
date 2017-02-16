@@ -1,7 +1,6 @@
 package com.example.pball.micspot;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Interceptor;
@@ -12,8 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import retrofit2.Callback;
-import retrofit2.http.Headers;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import com.google.gson.Gson;
@@ -56,7 +53,69 @@ public final class MicSpotService {
      * This class contains detailed information about a specific open mic.
      */
     public static class Mic {
-        // TODO: Implement
+        public final String id;
+        public final String createdBy;
+        public final String micName;
+        public final String venueName;
+        public final String venueAddress;
+        public final float venueLat;
+        public final float venueLng;
+        public final Date startDate;
+        public final int duration;
+        public final String meetingBasis;
+        public final int setTime;
+        public final int numSlots;
+        public final Instance nextInstance;
+
+        public Mic(String id, String createdBy, String micName, String venueName,
+                   String venueAddress, float venueLat, float venueLng, Date startDate,
+                   int duration, String meetingBasis, int setTime, int numSlots,
+                   Instance nextInstance) {
+            this.id = id;
+            this.createdBy = createdBy;
+            this.micName = micName;
+            this.venueName = venueName;
+            this.venueAddress = venueAddress;
+            this.venueLat = venueLat;
+            this.venueLng = venueLng;
+            this.startDate = startDate;
+            this.duration = duration;
+            this.meetingBasis = meetingBasis;
+            this.setTime = setTime;
+            this.numSlots = numSlots;
+            this.nextInstance = nextInstance;
+        }
+    }
+
+    public static class Instance {
+        public final String micId;
+        public final String instanceId;
+        public final Date startDate;
+        public final Date endDate;
+        public final int numSlots;
+        public final int setTime;
+        public final int cancelled;
+        public final List<Signup> signups;
+        public Instance(String micId, String instanceId, Date startDate, Date endDate, int numSlots,
+                        int setTime, int cancelled, List<Signup> signups) {
+            this.micId = micId;
+            this.instanceId = instanceId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.numSlots = numSlots;
+            this.setTime = setTime;
+            this.cancelled = cancelled;
+            this.signups = signups;
+        }
+    }
+
+    public static class Signup {
+        public final String userId;
+        public final String name;
+        public Signup(String userId, String name) {
+            this.userId = userId;
+            this.name = name;
+        }
     }
 
     public static class FBToken {
@@ -81,12 +140,21 @@ public final class MicSpotService {
 
         @GET("/api/mics")
         Call<List<MicSummary>> mics();
+
+        @GET("/api/mics/{id}")
+        Call<Mic> mic(@Path("id") String micId);
     }
 
-    public void GetAllMics(String jwt, MicMap map) throws IOException {
+    public void getAllMics(MicMap map, String jwt) throws IOException {
         MicClient client = Create(jwt);
         Call<List<MicSummary>> call = client.mics();
         call.enqueue(map);
+    }
+
+    public void getMic(String micId, SignUpActivity activity, String jwt) throws IOException {
+        MicClient client = Create(jwt);
+        Call<Mic> call = client.mic(micId);
+        call.enqueue(activity);
     }
 
     public static void GetJWT(String fbId, String fbToken, LoginActivity login) {

@@ -23,7 +23,7 @@
         android:layout_marginRight="5dp" />
 
     <Button
-        android:id="@+id/message_button"
+        android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
