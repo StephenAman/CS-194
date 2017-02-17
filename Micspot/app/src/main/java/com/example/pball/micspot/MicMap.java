@@ -56,6 +56,20 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh map markers if Google Maps has been initialized
+        if (mMap != null) {
+            String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
+            try {
+                service.getAllMics(this, jwt);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void onResponse(Call<List<MicSpotService.MicSummary>> call,
                            Response<List<MicSpotService.MicSummary>> response) {
         if (response.isSuccessful()) {

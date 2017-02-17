@@ -52,8 +52,8 @@ MicController.findNextOrCreate = function(mic, callback) {
 			return callback(null, instanceId);
 		}
 		// Don't create a new instance if the mic is not repeating.
-		if (!mic.get('meetingBasis')) {
-			return callback(null, false);
+		if (!mic.isRepeating()) {
+			return callback(null, null);
 		}
 		MicController.createNextInstance(mic, function(instanceId) {
 			return callback(null, instanceId);
@@ -111,7 +111,7 @@ MicController.createNextInstance = function(mic, callback) {
 		// start date and meeting basis.
 		var date = startDate;
 		while (date < now) {
-			switch(mic.get('meetingBasis')) {
+			switch(mic.get('meetingBasis').toLowerCase()) {
 				case 'daily':
 					date.add(1, 'days');
 					break;
@@ -125,7 +125,7 @@ MicController.createNextInstance = function(mic, callback) {
 					date.add(1, 'months');
 					break;
 				default:
-					console.log('Fatal error: invalid meetingBasis');
+					console.log('Mic is not repeating, no instance needed.');
 					return callback(null);
 			}
 		}
@@ -389,6 +389,5 @@ GetMicSummary = function(mic) {
 		});
 	});
 }
-
 
 module.exports = MicController;

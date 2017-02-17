@@ -49,8 +49,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
 
                     @Override
                     public void onCancel() {
-                        Intent intent = new Intent(LoginActivity.this, MicMap.class);
-                        LoginActivity.this.startActivity(intent);
+
                     }
 
                     @Override

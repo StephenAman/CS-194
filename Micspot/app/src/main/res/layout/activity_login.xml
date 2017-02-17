@@ -27,7 +27,6 @@
         android:layout_marginTop="30dp"
         android:id="@+id/textView"
         android:textSize="74sp"
-        android:fontFamily="cursive"
         android:typeface="normal"
         android:textStyle="normal|bold"
         android:layout_alignParentTop="true"
@@ -39,13 +38,11 @@
         android:textSize="32sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="cursive"
         android:typeface="normal"
         android:textStyle="normal|bold"
         android:layout_marginTop="19dp"
         android:id="@+id/textView4"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
-
 
 </RelativeLayout>

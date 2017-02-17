@@ -111,6 +111,33 @@ public final class MicSpotService {
         }
     }
 
+    public static class CreateMicData {
+        public final String micName;
+        public final String venueName;
+        public final String venueAddress;
+        public final float venueLat;
+        public final float venueLng;
+        public final Date startDate;
+        public final int duration;
+        public final String meetingBasis;
+        public final int setTime;
+        public final int numSlots;
+        public CreateMicData(String micName, String venueName, String venueAddress,
+                             float venueLat, float venueLng, Date startDate, int duration,
+                             String meetingBasis, int setTime, int numSlots) {
+            this.micName = micName;
+            this.venueName = venueName;
+            this.venueAddress = venueAddress;
+            this.venueLat = venueLat;
+            this.venueLng = venueLng;
+            this.startDate = startDate;
+            this.duration = duration;
+            this.meetingBasis = meetingBasis;
+            this.setTime = setTime;
+            this.numSlots = numSlots;
+        }
+    }
+
     public static class Signup {
         public final String userId;
         public final String name;
@@ -147,6 +174,9 @@ public final class MicSpotService {
 
         @GET("/api/mics")
         Call<List<MicSummary>> mics();
+
+        @POST("/api/mics")
+        Call<Void> createMic(@Body CreateMicData data);
 
         @GET("/api/mics/{id}")
         Call<Mic> mic(@Path("id") String micId);

@@ -14,15 +14,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.content.Intent;
 import android.widget.Toast;
-
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateMic extends AppCompatActivity {
+    private static final String PREF_FILE = "SharedPrefs";
     private static final int PLACE_PICKER_REQUEST = 1;
     private MicSpotService service;
     private EditText dateField;
@@ -113,7 +116,8 @@ public class CreateMic extends AppCompatActivity {
         }
     }
 
-    public void tryCreateActivity(View v) {
+    public void tryCreateMic(View v) {
+        // Validate fields
         EditText nameField = (EditText) findViewById(R.id.mic_name_field);
         EditText durationField = (EditText) findViewById(R.id.mic_duration_field);
         EditText setTimeField = (EditText) findViewById(R.id.mic_set_time_field);
@@ -126,6 +130,57 @@ public class CreateMic extends AppCompatActivity {
             toast.show();
             return;
         }
+
+        // Get Spinner selection
+        String meetingBasis = ((Spinner)findViewById(R.id.mic_meeting_basis_spinner))
+                .getSelectedItem().toString();
+
+        // Combine date and time fields into one "date-time" object
+        Calendar a = Calendar.getInstance();
+        a.setTime(chosenDate);
+        Calendar b = Calendar.getInstance();
+        b.setTime(chosenTime);
+        a.set(Calendar.HOUR_OF_DAY, b.get(Calendar.HOUR_OF_DAY));
+        a.set(Calendar.MINUTE, b.get(Calendar.MINUTE));
+        a.set(Calendar.SECOND, 0);
+        a.set(Calendar.MILLISECOND, 0);
+
+        // Populate CreateMicData
+        MicSpotService.CreateMicData data = new MicSpotService.CreateMicData(
+                nameField.getText().toString(),
+                chosenPlace.getName().toString(),
+                chosenPlace.getAddress().toString(),
+                (float) chosenPlace.getLatLng().latitude,
+                (float) chosenPlace.getLatLng().longitude,
+                a.getTime(),
+                Integer.parseInt(durationField.getText().toString()),
+                meetingBasis,
+                Integer.parseInt(setTimeField.getText().toString()),
+                Integer.parseInt(numSlotsField.getText().toString())
+        );
+
+        // Send request
+        String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
+        MicSpotService.MicClient client = service.Create(jwt);
+        Call<Void> call = client.createMic(data);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(
+                            CreateMic.this, "Mic was successfully created", Toast.LENGTH_SHORT
+                    ).show();
+                } else {
+                    Toast.makeText(CreateMic.this, "Failed to create mic", Toast.LENGTH_SHORT)
+                        .show();
+                }
+                finish();
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private boolean isEmpty(EditText text) {
