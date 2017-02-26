@@ -147,11 +147,11 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
         for (MicSpotService.MicSummary mic : mics) {
             LatLng micLocation = new LatLng(mic.venueLat, mic.venueLng);
             MarkerOptions marker = new MarkerOptions();
-            float markerColor = BitmapDescriptorFactory.HUE_ORANGE;
+            marker.icon(BitmapDescriptorFactory.fromAsset("Blue.bmp"));
             if (mic.status.equals("yellow")) {
-                markerColor = BitmapDescriptorFactory.HUE_YELLOW;
+                marker.icon(BitmapDescriptorFactory.fromAsset("Yellow.bmp"));
             }
-            marker.icon(BitmapDescriptorFactory.defaultMarker(markerColor));
+            //marker.icon(BitmapDescriptorFactory.defaultMarker(markerColor)); //old default marker method
             builder.include(micLocation);
             mMap.addMarker(marker.position(micLocation).title(mic.micId));
         }

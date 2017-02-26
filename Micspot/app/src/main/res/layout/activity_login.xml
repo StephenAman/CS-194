@@ -20,21 +20,9 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="MicSpot"
-        android:textColor="#FFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:id="@+id/textView"
-        android:textSize="74sp"
-        android:typeface="normal"
-        android:textStyle="normal|bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
         android:text="Spreadin' the funny!"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
+        android:fontFamily="cursive"
         android:textSize="32sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,5 +32,20 @@
         android:id="@+id/textView4"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="MicSpot"
+        android:fontFamily="cursive"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:id="@+id/textView"
+        android:textSize="74sp"
+        android:typeface="normal"
+        android:textStyle="normal|bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4" />
 
 </RelativeLayout>
