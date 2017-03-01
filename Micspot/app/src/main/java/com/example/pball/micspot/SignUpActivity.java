@@ -27,6 +27,7 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
     private String userId;
     private String jwt;
     private boolean isUserSignedUp;
+    private boolean isUserProducer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,13 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
                     isUserSignedUp = true;
                 }
             }
+
+            // Check if user is the mic producer
+            isUserProducer = false;
+            if (mic.createdBy.equals(userId)) {
+                isUserProducer = true;
+            }
+
             listAdapter.clear();
             listAdapter.addAll(mic.nextInstance.signups);
         }
@@ -103,7 +111,7 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
                 }
             } else {
                 tvName.setText(signup.name);
-                if (signup.userId.equals(userId)) {
+                if (isUserProducer || signup.userId.equals(userId)) {
                     // Slot is taken by the app user
                     btSignup.setText("Remove");
                     btSignup.setOnClickListener(new AdjustSignupListener(position, true));
