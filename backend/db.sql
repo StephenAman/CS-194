@@ -21,6 +21,9 @@ USE `mydb` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   `id` VARCHAR(45) NOT NULL,
   `name` VARCHAR(255) NULL,
+  `lastLocationLat` FLOAT NULL,
+  `lastLocationLng` FLOAT NULL,
+  `lastLocationTime` DATETIME NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
@@ -42,6 +45,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`mics` (
   `meetingBasis` VARCHAR(45) NOT NULL,
   `setTime` INT NOT NULL,
   `numSlots` INT NOT NULL,
+  `signupsOpenTimeOfDay` DATETIME NULL,
+  `signupsOpenNumDaysBefore` INT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_mics_users_idx` (`createdBy` ASC),
@@ -64,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`instances` (
   `cancelled` TINYINT(1) NOT NULL,
   `numSlots` INT NOT NULL,
   `setTime` INT NOT NULL,
+  `signupsOpenDate` DATETIME NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_instances_mics1_idx` (`micId` ASC),
@@ -94,6 +100,30 @@ CREATE TABLE IF NOT EXISTS `mydb`.`signups` (
   CONSTRAINT `fk_signups_instances1`
     FOREIGN KEY (`instanceId`)
     REFERENCES `mydb`.`instances` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`reviews`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`reviews` (
+  `userId` VARCHAR(45) NOT NULL,
+  `micId` INT NOT NULL,
+  `reviewText` TEXT NOT NULL,
+  `time` DATETIME NULL,
+  INDEX `fk_reviews_users1_idx` (`userId` ASC),
+  INDEX `fk_reviews_mics1_idx` (`micId` ASC),
+  PRIMARY KEY (`userId`, `micId`),
+  CONSTRAINT `fk_reviews_users1`
+    FOREIGN KEY (`userId`)
+    REFERENCES `mydb`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_reviews_mics1`
+    FOREIGN KEY (`micId`)
+    REFERENCES `mydb`.`mics` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
