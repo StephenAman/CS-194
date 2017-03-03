@@ -3,6 +3,7 @@ var moment = require('moment');
 var Instance = require('../models/instance.js');
 var Mic = require('../models/mic.js');
 var User = require('../models/user.js');
+var Review = require('../models/review.js');
 
 /**
  * MicController is responsible for handling API requests that rely upon
@@ -336,6 +337,36 @@ MicController.deleteSignup = function(req, res) {
 MicController.updateInstance = function(req, res) {
 	// TODO: Implement.
 };
+
+/**
+ * Adds a new review for this mic.
+ */
+MicController.createReview = function(req, res) {
+	var reviewData = {
+		'userId': req.user.get('id'),
+		'micId': req.params.micId,
+		'reviewText': req.body.reviewText,
+	}
+	Review.create(reviewData, function(err, review) {
+		if (err) {
+			res.status(400).send("You have already reviewed this mic.");
+		} else {
+			res.send();
+		}
+	});
+}
+
+/**
+ * Returns all reviews associated with the requested mic.
+ */
+MicController.getReviews = function(req, res) {
+	Review.findAll(req.params.micId, function(err, mics) {
+		if (err) {
+			res.status(500).send();
+		}
+		res.send(mics);
+	});
+}
 
 /**
  * Helper function which returns a promise to convert a full mic object

@@ -72,8 +72,19 @@ var Signup = {
 			minimum: 0,
 		}
 	}
-}
+};
+
+var CreateReview = {
+	type: 'object',
+	properties: {
+		reviewText: {
+			type: 'string',
+			required: true,
+		}
+	}
+};
 
 exports.MobileAuth = MobileAuth;
 exports.CreateMic = CreateMic;
 exports.Signup = Signup;
+exports.CreateReview = CreateReview;

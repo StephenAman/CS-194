@@ -268,6 +268,18 @@ app.delete('/api/mics/:micId/instances/:instanceId/signups', validate({body: sch
 });
 
 /**
+ * '/api/mics/:micId/reviews'
+ *  GET: Get reviews for this mic
+ *  POST: Create new review
+ */
+app.get('/api/mics/:micId/reviews', function(req, res) {
+	MicController.getReviews(req, res);
+});
+app.post('/api/mics/:micId/reviews', validate({body: schemas.CreateReview}), function(req, res) {
+	MicController.createReview(req, res);
+});
+
+/**
  * Handle invalid JSON requests
  */
 app.use(function(err, req, res, next) {

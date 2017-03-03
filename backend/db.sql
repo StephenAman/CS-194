@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`reviews` (
   `userId` VARCHAR(45) NOT NULL,
   `micId` INT NOT NULL,
   `reviewText` TEXT NOT NULL,
-  `time` DATETIME NULL,
+  `time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX `fk_reviews_users1_idx` (`userId` ASC),
   INDEX `fk_reviews_mics1_idx` (`micId` ASC),
   PRIMARY KEY (`userId`, `micId`),
