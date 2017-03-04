@@ -63,6 +63,49 @@ var CreateMic = {
 	}
 };
 
+var UpdateInstance = {
+	type: 'object',
+	properties: {
+		eventDate: {
+			type: 'object',
+			properties: {
+				startDate: {
+					type: 'string',
+					format: 'date-time',
+					required: true,
+				},
+				duration: {
+					type: 'int',
+					required: true,
+				}
+			},
+			required: false,
+		},
+		signupsOpenDate: {
+			type: 'string',
+			format: 'date-time',
+			required: false,
+		},
+		numSlots: {
+			type: 'int',
+			required: false,
+		},
+		setTime: {
+			type: 'int',
+			required: false,
+		},
+		cancelled: {
+			type: 'bool',
+			required: false,
+		},
+		meetingBasis: {
+			type: 'string',
+			required: false,
+			maxLength: 45,
+		}
+	}
+};
+
 var Signup = {
 	type: 'object',
 	properties: {
@@ -88,3 +131,4 @@ exports.MobileAuth = MobileAuth;
 exports.CreateMic = CreateMic;
 exports.Signup = Signup;
 exports.CreateReview = CreateReview;
+exports.UpdateInstance = UpdateInstance;

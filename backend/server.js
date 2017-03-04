@@ -252,7 +252,8 @@ app.get('/api/mics/:micId/instances', function(req, res) {
 app.get('/api/mics/:micId/instances/:instanceId', function(req, res) {
 	MicController.getInstance(req, res);
 });
-app.put('/api/mics/:micId/instances/:instanceId', function(req, res) {
+app.put('/api/mics/:micId/instances/:instanceId', validate({body: schemas.UpdateInstance}), function(req, res) {
+	MicController.updateInstance(req, res);
 });
 
 /**
