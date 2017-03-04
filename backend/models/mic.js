@@ -96,7 +96,17 @@ Mic.prototype.isRepeating = function() {
  * Note that this does not update any dependent instances. 
  */
 Mic.prototype.save = function(callback) {
-	// TODO: Implement
+	db.query(
+		'UPDATE mics SET ? WHERE id = ?',
+		[this.data, this.get('id')],
+		function(err) {
+			if (err) {
+				return callback(err);
+			} else {
+				return callback(null);
+			}
+		}
+	);
 };
 
 /**

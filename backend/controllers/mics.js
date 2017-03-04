@@ -346,11 +346,15 @@ MicController.updateInstance = function(req, res) {
 		if (err) {
 			return res.status(500).send();
 		}
+
+		// Update trivial properties of the instance.
 		if (req.body.signupsOpenDate) {
 			instance.set('signupsOpenDate', moment(req.body.signupsOpenDate).format('YYYY-MM-DD HH:mm:ss'));
 		}
-		shouldDeleteSignups = false;
+		var shouldDeleteSignups = false;
 		if (req.body.numSlots) {
+			// If numSlots is reduced by this update, we might have to delete
+			// some signups in the database which are now invalid.
 			shouldDeleteSignups = (instance.get('numSlots') > req.body.numSlots);
 			instance.set('numSlots', req.body.numSlots);
 		}
@@ -360,21 +364,66 @@ MicController.updateInstance = function(req, res) {
 		if (req.body.cancelled) {
 			instance.set('cancelled', req.body.cancelled);
 		}
+		var updateDefaultStartDate = false;
+
+		// Change the date of this mic instance. This can either be a one-off
+		// change just for this instance (if updateDefaultStartDate is false),
+		// or it can change the underlying mic template which generates all 
+		// future instances.
 		if (req.body.eventDate) {
 			var startDate = moment(req.body.eventDate.startDate);
 			var endDate = startDate.clone();
 			endDate.add(req.body.eventDate.duration, 'minutes');
 			instance.set('startDate', startDate.format('YYYY-MM-DD HH:mm:ss'));
 			instance.set('endDate', endDate.format('YYYY-MM-DD HH:mm:ss'));
+			updateDefaultStartDate = req.body.eventDate.updateDefaultStartDate;
 		}
 		instance.save(shouldDeleteSignups, function(err) {
 			if (err) {
 				return res.status(500).send();
 			}
-			res.send();	
+			if (req.body.meetingBasis || updateDefaultStartDate) {
+			    return MicController.updateMeetingBasis(req, res, instance, updateDefaultStartDate);
+			} else {
+				return res.send();				
+			}
 		});
 	});
 };
+
+/**
+ * Updates the meeting basis of a mic. Helper to updateInstance.
+ */
+MicController.updateMeetingBasis = function(req, res, instance, updateDefaultStartDate) {
+	Mic.findOne(req.params.micId, function(err, mic) {
+		if (err) {
+			throw err;
+			return res.status(500).send();
+		}
+		
+		// Updates the "template" start date for future instances of this mic.
+		// For example, if the user changed this week's instance from Tuesday
+		// to Thursday, and updateDefaultStartDate is true, future instances
+		// of this mic will occur on Thursdays. Otherwise, they will continue
+		// to occur on Tuesdays.
+		if (updateDefaultStartDate) {
+			mic.set('startDate', instance.get('startDate'));
+			mic.set('duration', req.body.eventDate.duration);
+		}
+		// Updates the meeting basis of the mic.
+		if (req.body.meetingBasis) {
+			mic.set('meetingBasis', req.body.meetingBasis);
+		}
+		mic.save(function(err) {
+			if (err) {
+				throw err;
+				return res.status(500).send();
+			} else {
+				return res.send();
+			}
+		});
+	});
+}
 
 /**
  * Adds a new review for this mic.
