@@ -46,6 +46,7 @@ var CreateMic = {
 		duration: {
 			type: 'int',
 			required: true,
+			minimum: 0,
 		},
 		meetingBasis: {
 			type: 'string',
@@ -55,10 +56,12 @@ var CreateMic = {
 		setTime: {
 			type: 'int',
 			required: true,
+			minimum: 0,
 		},
 		numSlots: {
 			type: 'int',
 			required: true,
+			minimum: 0,
 		}
 	}
 };
@@ -77,6 +80,7 @@ var UpdateInstance = {
 				duration: {
 					type: 'int',
 					required: true,
+					minimum: 0,
 				}
 			},
 			required: false,
@@ -89,14 +93,18 @@ var UpdateInstance = {
 		numSlots: {
 			type: 'int',
 			required: false,
+			minimum: 0,
 		},
 		setTime: {
 			type: 'int',
 			required: false,
+			minimum: 0,
 		},
 		cancelled: {
-			type: 'bool',
+			type: 'int',
 			required: false,
+			minimum: 0,
+			maximum: 1,
 		},
 		meetingBasis: {
 			type: 'string',

@@ -136,7 +136,7 @@ MicController.createNextInstance = function(mic, callback) {
 		'startDate': date.format('YYYY-MM-DD HH:mm:ss'),
 		'endDate': date.add(mic.get('duration'), 'minutes')
 			.format('YYYY-MM-DD HH:mm:ss'),
-		'cancelled': false,
+		'cancelled': 0,
 		'numSlots': mic.get('numSlots'),
 		'setTime': mic.get('setTime'),
 	};
@@ -335,7 +335,38 @@ MicController.deleteSignup = function(req, res) {
  * Updates a mic instance.
  */
 MicController.updateInstance = function(req, res) {
-	// TODO: Implement.
+	Instance.findOne(req.params.instanceId, function(err, instance) {
+		if (err) {
+			return res.status(500).send();
+		}
+		if (req.body.signupsOpenDate) {
+			instance.set('signupsOpenDate', req.body.signupsOpenDate);
+		}
+		removeSlots = false;
+		if (req.body.numSlots) {
+			removeSlots = (instance.get('numSlots') > req.body.numSlots);
+			instance.set('numSlots', req.body.numSlots);
+		}
+		if (req.body.setTime) {
+			instance.set('setTime', req.body.setTime);
+		}
+		if (req.body.cancelled) {
+			instance.set('cancelled', req.body.cancelled);
+		}
+		if (req.body.eventDate) {
+			var startDate = moment(req.body.eventDate.startDate);
+			var endDate = startDate.clone();
+			endDate.add(req.body.eventDate.duration, 'minutes');
+			instance.set('startDate', startDate.format('YYYY-MM-DD HH:mm:ss'));
+			instance.set('endDate', endDate.format('YYYY-MM-DD HH:mm:ss'));
+		}
+		instance.save(removeSlots, function(err) {
+			if (err) {
+				return res.status(500).send();
+			}
+			res.send();	
+		});
+	});
 };
 
 /**

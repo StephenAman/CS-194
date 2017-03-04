@@ -140,8 +140,30 @@ Instance.deleteSignup = function(instanceId, slot, callback) {
 /**
  * Updates this instance in the database.
  */
-Instance.prototype.save = function(callback) {
-	// TODO: Implement
+Instance.prototype.save = function(removeSlots, callback) {
+	var numSlots = this.get('numSlots');
+	var id = this.get('id');
+	db.query(
+		'UPDATE instances SET ? WHERE id = ?',
+		[this.data, this.get('id')],
+		function(err) {
+			if (err) {
+				return callback(err);
+			} else {
+				if (removeSlots) {
+					db.query(
+						'DELETE FROM signups WHERE instanceId = ? AND slotNumber >= ?',
+						[id, numSlots],
+						function(err) {
+							return callback(null);
+						}
+					)
+				} else {
+					return callback(null);
+				}
+			}
+		}
+	);
 };
 
 module.exports = Instance;
