@@ -230,6 +230,7 @@ MicController.getInstanceAndSignups = function(instanceId, callback) {
 				numSlots: instance.get('numSlots'),
 				setTime: instance.get('setTime'),
 				cancelled: instance.get('cancelled'),
+				signupsOpenDate: instance.get('signupsOpenDate'),
 				signups: new Array(instance.get('numSlots')).fill(null),
 			}
 			instance.getSignups(function(err, results) {
@@ -271,6 +272,12 @@ MicController.createSignup = function(req, res) {
 					res.status(400).send('You have already signed up for a slot.');
 					return;
 				}	
+			}
+			// Check that signups are opened.
+			if (instance.signupsOpenDate) {
+				if (moment().isBefore(moment(instance.signupsOpenDate))) {
+					return res.status(400).send('Signups have not opened yet.');
+				}
 			}
 
 			// Query the DB.
@@ -340,11 +347,11 @@ MicController.updateInstance = function(req, res) {
 			return res.status(500).send();
 		}
 		if (req.body.signupsOpenDate) {
-			instance.set('signupsOpenDate', req.body.signupsOpenDate);
+			instance.set('signupsOpenDate', moment(req.body.signupsOpenDate).format('YYYY-MM-DD HH:mm:ss'));
 		}
-		removeSlots = false;
+		shouldDeleteSignups = false;
 		if (req.body.numSlots) {
-			removeSlots = (instance.get('numSlots') > req.body.numSlots);
+			shouldDeleteSignups = (instance.get('numSlots') > req.body.numSlots);
 			instance.set('numSlots', req.body.numSlots);
 		}
 		if (req.body.setTime) {
@@ -360,7 +367,7 @@ MicController.updateInstance = function(req, res) {
 			instance.set('startDate', startDate.format('YYYY-MM-DD HH:mm:ss'));
 			instance.set('endDate', endDate.format('YYYY-MM-DD HH:mm:ss'));
 		}
-		instance.save(removeSlots, function(err) {
+		instance.save(shouldDeleteSignups, function(err) {
 			if (err) {
 				return res.status(500).send();
 			}
@@ -425,7 +432,7 @@ GetMicSummary = function(mic) {
 							// This is 'green' if the event is happening in less
 							// than 24 hours, and 'yellow' if it is happening in more
 							// than 24 hours.
-							now = moment();
+							var now = moment();
 							var status = 'yellow';
 							var begin = moment(instance.get('startDate')).subtract(24, 'hours');
 							var end = moment(instance.get('endDate'));

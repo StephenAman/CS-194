@@ -140,7 +140,7 @@ Instance.deleteSignup = function(instanceId, slot, callback) {
 /**
  * Updates this instance in the database.
  */
-Instance.prototype.save = function(removeSlots, callback) {
+Instance.prototype.save = function(shouldDeleteSignups, callback) {
 	var numSlots = this.get('numSlots');
 	var id = this.get('id');
 	db.query(
@@ -150,7 +150,7 @@ Instance.prototype.save = function(removeSlots, callback) {
 			if (err) {
 				return callback(err);
 			} else {
-				if (removeSlots) {
+				if (shouldDeleteSignups) {
 					db.query(
 						'DELETE FROM signups WHERE instanceId = ? AND slotNumber >= ?',
 						[id, numSlots],
