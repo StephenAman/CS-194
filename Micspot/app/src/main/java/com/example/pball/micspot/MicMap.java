@@ -156,7 +156,9 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
             mMap.addMarker(marker.position(micLocation).title(mic.micId));
         }
         int padding = 100;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
+        if (!mics.isEmpty()) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
+        }
     }
 
     private TextView populateText(TextView windowText, MicSpotService.MicSummary mic) {
