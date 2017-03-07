@@ -220,7 +220,7 @@ public final class MicSpotService {
                                 @Body SignupSlot slot);
 
         @PUT("/api/mics/{micId}/instances/{instanceId}")
-        Call<Void> updateInstance(@Body UpdateInstanceData data);
+        Call<Void> updateInstance(@Path("micId") String micId, @Path("instanceId") String instanceId, @Body UpdateInstanceData data);
     }
 
     public void getAllMics(MicMap map, String jwt) throws IOException {
