@@ -1,6 +1,11 @@
 package com.example.pball.micspot;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Interceptor;
@@ -18,9 +23,11 @@ import retrofit2.http.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public final class MicSpotService {
     public static final String API_URL = "http://138.68.7.110:8080";
+
 
     /**
      * MicSummary contains the info necessary to place map markers and populate
@@ -36,6 +43,7 @@ public final class MicSpotService {
         public final String meetingBasis;
         public final Date startDate;
         public final Date endDate;
+
 
         public MicSummary(String micId, String status, int venueLat, int venueLng, String micName,
                           String createdBy, String meetingBasis, Date start, Date end) {
@@ -54,7 +62,7 @@ public final class MicSpotService {
     /**
      * This class contains detailed information about a specific open mic.
      */
-    public static class Mic {
+    public static class Mic implements Parcelable{
         public final String id;
         public final String createdBy;
         public final String micName;
@@ -72,7 +80,7 @@ public final class MicSpotService {
         public Mic(String id, String createdBy, String micName, String venueName,
                    String venueAddress, float venueLat, float venueLng, Date startDate,
                    int duration, String meetingBasis, int setTime, int numSlots,
-                   Instance nextInstance) {
+                   Instance nextInstance)  {
             this.id = id;
             this.createdBy = createdBy;
             this.micName = micName;
@@ -87,6 +95,66 @@ public final class MicSpotService {
             this.numSlots = numSlots;
             this.nextInstance = nextInstance;
         }
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeStringArray(new String[] {
+            this.id,
+            this.createdBy,
+            this.micName,
+            this.venueName,
+            this.venueAddress,
+                    String.valueOf(this.venueLat),
+                    String.valueOf(this.venueLng),
+                    String.valueOf(this.startDate),
+                    String.valueOf(this.duration),
+            this.meetingBasis ,
+                    String.valueOf(this.setTime),
+                    String.valueOf(this.numSlots),
+                    String.valueOf(this.nextInstance)
+            });
+        }
+        public Mic(Parcel in){Date startDate1;
+            String[] data = new String[13];
+
+            in.readStringArray(data);
+            // the order needs to be the same as in writeToParcel() method
+            this.id = data[0];
+            this.createdBy = data[1];
+            this.micName = data[2];
+            this.venueName = data[3];
+            this.venueAddress = data[4];
+            this.venueLat = Float.valueOf(data[5]);
+            this.venueLng = Float.valueOf(data[6]);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            try {
+                Date d = sdf.parse(data[7]);
+                startDate1 = d;
+            } catch (ParseException ex) {
+                startDate1 = null;
+            }
+            this.startDate = startDate1;
+            this.duration = Integer.parseInt(data[8]);
+            this.meetingBasis = data[9];
+            this.setTime = Integer.parseInt(data[10]);
+            this.numSlots = Integer.parseInt(data[11]);
+            this.nextInstance = null;
+        }
+        public static final Parcelable.Creator CREATOR
+                = new Parcelable.Creator() {
+            @Override
+            public Object createFromParcel(Parcel in) {
+                return new Mic(in);
+            }
+            public Mic[] newArray(int size) {
+                return new Mic[size];
+            }
+        };
     }
 
     public static class Instance {
@@ -110,6 +178,8 @@ public final class MicSpotService {
             this.signups = signups;
         }
     }
+
+
 
     public static class CreateMicData {
         public final String micName;

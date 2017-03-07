@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create_mic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#FFFFFF"
+    tools:context="com.example.pball.micspot.CreateMic">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:text="Mic Settings"
+            android:textColor="@color/micspotOrange"
+            android:fontFamily="cursive"
+            android:textSize="48dp"
+            android:layout_width="match_parent"
+            android:id="@+id/textView3"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:ems="10"
+                android:id="@+id/mic_date_field"
+                android:layout_weight="1"
+                android:textColorHint="@color/micspotOrange"
+                android:textAlignment="viewStart"
+                android:hint="Date"/>
+
+            <Button
+                android:text="Select date"
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/date_button"
+                android:onClick="showDatePicker"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:ems="10"
+                android:id="@+id/mic_time_field"
+                android:layout_weight="1"
+                android:hint="Time"
+                android:textColorHint="@color/micspotOrange"
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:textAlignment="textStart" />
+
+            <Button
+                android:text="Select time"
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:layout_height="wrap_content"
+                android:id="@+id/time_button"
+                android:layout_width="130dp"
+                android:onClick="showTimePicker"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"
+                android:ems="10"
+                android:id="@+id/mic_address_field"
+                android:layout_weight="1"
+                android:textColorHint="@color/micspotOrange"
+                android:hint="Address" />
+
+            <Button
+                android:text="Select place"
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:layout_height="wrap_content"
+                android:id="@+id/place_button"
+                android:layout_width="130dp"
+                android:onClick="showPlacePicker" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+
+                <TextView
+                    android:text="Event name"
+                    android:textColor="@color/micspotOrange"
+                    android:id="@+id/textView2"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:inputType="textPersonName"
+                    android:textColor="@color/micspotOrange"
+                    android:ems="10"
+                    android:id="@+id/mic_name_field"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+
+                <TextView
+                    android:text="Duration (min)"
+                    android:id="@+id/textView6"
+                    android:textColor="@color/micspotOrange"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/mic_duration_field"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+
+                <TextView
+                    android:text="Set time (min)"
+                    android:textColor="@color/micspotOrange"
+
+                    android:id="@+id/textView7"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/mic_set_time_field"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:text="Slot count"
+                    android:textColor="@color/micspotOrange"
+
+                    android:id="@+id/textView8"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/mic_num_slots_field"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+
+                <TextView
+                    android:text="Meeting basis"
+                    android:textColor="@color/micspotOrange"
+                    android:id="@+id/textView5"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+
+                <Spinner
+                    android:id="@+id/mic_meeting_basis_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="10dp"/>
+
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:text="Update"
+        android:textStyle="bold"
+        android:fontFamily="cursive"
+        android:textSize="32dp"
+        android:textColor="@color/white"
+        android:background="@color/micspotOrange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_button"
+        android:onClick="tryCreateMic"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

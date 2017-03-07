@@ -46,6 +46,9 @@
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up" />
         <activity
+            android:name=".MicSettings"
+            android:label="MicSettings" />
+        <activity
             android:name=".CreateMic"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

@@ -2,6 +2,7 @@ package com.example.pball.micspot;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -10,12 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Button;
+import android.content.Intent;
+import android.util.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 public class SignUpActivity extends Activity implements Callback<MicSpotService.Mic> {
     public static final String PREF_FILE = "SharedPrefs";
@@ -46,6 +50,8 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
         signupListView = (ListView) findViewById(R.id.signup_list);
         listAdapter = new SignupAdapter(this);
         signupListView.setAdapter(listAdapter);
+
+
     }
 
     @Override
@@ -71,7 +77,25 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
 
             listAdapter.clear();
             listAdapter.addAll(mic.nextInstance.signups);
+
+            final Intent micIntent = new Intent(SignUpActivity.this, MicSettings.class);
+            Bundle b = new Bundle();
+            b.putParcelable("MicSpotService.Mic", mic);
+            micIntent.putExtras(b);
+            //micIntent.putExtra("MicSpotService.Mic", (Serializable) mic);
+            //SignUpActivity.this.startActivity(micIntent);
+            micIntent.setClass(this, MicSettings.class);
+
+            //add button once have mic to go to settings page
+            final Button button = (Button) findViewById(R.id.mic_settings);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    startActivity(micIntent);
+
+                }
+            });
         }
+
     }
 
     @Override
@@ -161,6 +185,7 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
             });
         }
     }
+
 
     public class MessageListener implements View.OnClickListener {
         @Override
