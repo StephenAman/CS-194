@@ -185,6 +185,11 @@ public final class MicSpotService {
         Call<Void> addSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
                              @Body SignupSlot slot);
 
+        /*
+        @GET("/api/mics/{micId}/instances/{instanceId}")
+        Call<Instance> currentMic(@Path("micId") String micId, @Path("instanceId") String instanceId);
+        */
+
         @HTTP(method = "DELETE", path = "/api/mics/{micId}/instances/{instanceId}/signups", hasBody = true)
         Call<Void> removeSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
                                 @Body SignupSlot slot);
@@ -201,6 +206,14 @@ public final class MicSpotService {
         Call<Mic> call = client.mic(micId);
         call.enqueue(activity);
     }
+
+    /*
+    public void getMicInstance(String micId, String instanceId, SignUpActivity.AdjustSignupListener activity, String jwt) throws IOException {
+        MicClient client = Create(jwt);
+        Call<Instance> call = client.currentMic(micId, instanceId);
+        call.enqueue(activity);
+    }
+    */
 
     public static void GetJWT(String fbId, String fbToken, LoginActivity login) {
         Retrofit retrofit = new Retrofit.Builder()

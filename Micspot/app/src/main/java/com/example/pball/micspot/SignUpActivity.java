@@ -1,7 +1,9 @@
 package com.example.pball.micspot;
 
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -16,6 +18,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class SignUpActivity extends Activity implements Callback<MicSpotService.Mic> {
     public static final String PREF_FILE = "SharedPrefs";
@@ -23,6 +27,7 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
     private MicSpotService.Mic mic;
     private ListView signupListView;
     private SignupAdapter listAdapter;
+    private int numFreeSpots;
     private String micId;
     private String userId;
     private String jwt;
@@ -57,10 +62,12 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
 
             // Check if user is signed up to any of the slots
             isUserSignedUp = false;
+            numFreeSpots = 0;
             for (MicSpotService.Signup signup : mic.nextInstance.signups) {
                 if (signup != null && signup.userId.equals(userId)) {
                     isUserSignedUp = true;
                 }
+                if(signup == null) numFreeSpots++;
             }
 
             // Check if user is the mic producer
@@ -141,8 +148,13 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
             Call<Void> call;
             if (shouldDelete) {
                 call = client.removeSignup(mic.id, mic.nextInstance.instanceId, slot);
+                numFreeSpots++;
             } else {
                 call = client.addSignup(mic.id, mic.nextInstance.instanceId, slot);
+                numFreeSpots--;
+                if(numFreeSpots == 0) {
+                    //notifyFullList();
+                }
             }
             call.enqueue(new Callback<Void>() {
                 @Override
@@ -160,6 +172,7 @@ public class SignUpActivity extends Activity implements Callback<MicSpotService.
                 }
             });
         }
+
     }
 
     public class MessageListener implements View.OnClickListener {

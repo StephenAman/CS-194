@@ -1,11 +1,15 @@
 package com.example.pball.micspot;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +52,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     protected void onCreate(Bundle savedInstanceState) {
         mics = new HashMap<String, MicSpotService.MicSummary>();
         service = new MicSpotService();
+        FirebaseMessaging.getInstance().subscribeToTopic("BayArea");//would adjust this if national
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
