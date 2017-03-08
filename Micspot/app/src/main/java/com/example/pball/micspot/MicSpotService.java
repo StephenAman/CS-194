@@ -14,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
 import retrofit2.http.DELETE;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -138,6 +139,35 @@ public final class MicSpotService {
         }
     }
 
+    public static class UpdateInstanceData {
+        public EventDateWrapper eventDate;
+        public Date signupsOpenDate;
+        public int numSlots;
+        public int setTime;
+        public int cancelled;
+        public String meetingBasis;
+        public UpdateInstanceData(EventDateWrapper eventDate, Date signupsOpenDate, int numSlots,
+                                  int setTime, int cancelled, String meetingBasis) {
+            this.eventDate = eventDate;
+            this.signupsOpenDate = signupsOpenDate;
+            this.numSlots = numSlots;
+            this.setTime = setTime;
+            this.cancelled = cancelled;
+            this.meetingBasis = meetingBasis;
+        }
+    }
+
+    public static class EventDateWrapper {
+        public final Date startDate;
+        public final int duration;
+        public final int updateDefaultStartDate;
+        public EventDateWrapper(Date startDate, int duration, int updateDefaultStartDate) {
+            this.startDate = startDate;
+            this.duration = duration;
+            this.updateDefaultStartDate = updateDefaultStartDate;
+        }
+    }
+
     public static class Signup {
         public final String userId;
         public final String name;
@@ -193,6 +223,9 @@ public final class MicSpotService {
         @HTTP(method = "DELETE", path = "/api/mics/{micId}/instances/{instanceId}/signups", hasBody = true)
         Call<Void> removeSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
                                 @Body SignupSlot slot);
+
+        @PUT("/api/mics/{micId}/instances/{instanceId}")
+        Call<Void> updateInstance(@Path("micId") String micId, @Path("instanceId") String instanceId, @Body UpdateInstanceData data);
     }
 
     public void getAllMics(MicMap map, String jwt) throws IOException {
