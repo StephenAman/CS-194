@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "629403519667",
+    "firebase_url": "https://micspot-fd68e.firebaseio.com",
+    "project_id": "micspot-fd68e",
+    "storage_bucket": "micspot-fd68e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629403519667:android:ec49105c598cfb63",
+        "android_client_info": {
+          "package_name": "com.example.pball.micspot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629403519667-e8caffejem6oguh1k2pafnq634ti8dc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTtKqejsBvcwwyxpIMgSoRgCMsTx4vOZg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
