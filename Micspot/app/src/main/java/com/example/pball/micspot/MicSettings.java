@@ -92,15 +92,14 @@ public class MicSettings extends AppCompatActivity {
 
 
 
-//        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
-//        dateField.setText(formatter.format(mic.startDate.getTime()));
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+        dateField.setText(mic.startDate + "");
 
 
 //        formatter = new SimpleDateFormat("hh:mm a");
-//        timeField.setText(formatter.format(mic.startDate.getTime()));
-
-
-
+        if(mic.startDate != null){
+            timeField.setText(mic.startDate.getTime() + "");
+        }
 
         EditText nameField = (EditText) findViewById(R.id.mic_name_field);
         EditText durationField = (EditText) findViewById(R.id.mic_duration_field);
@@ -181,7 +180,7 @@ public class MicSettings extends AppCompatActivity {
         }
     }
 
-    public void tryCreateMic(View v) {
+    public void tryUpdateMic(View v) {
         // Validate fields
         EditText nameField = (EditText) findViewById(R.id.mic_name_field);
         EditText durationField = (EditText) findViewById(R.id.mic_duration_field);
@@ -212,7 +211,7 @@ public class MicSettings extends AppCompatActivity {
         a.set(Calendar.MILLISECOND, 0);
 
         // Populate CreateMicData
-        MicSpotService.CreateMicData data = new MicSpotService.CreateMicData(
+        MicSpotService.UpdateMicData data = new MicSpotService.UpdateMicData(
                 nameField.getText().toString(),
                 chosenPlace.getName().toString(),
                 chosenPlace.getAddress().toString(),
@@ -228,7 +227,7 @@ public class MicSettings extends AppCompatActivity {
         // Send request
         String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
         MicSpotService.MicClient client = service.Create(jwt);
-        Call<Void> call = client.createMic(data);
+        Call<Void> call = client.updateInstance(micID, instanceid, data);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   `lastLocationLat` FLOAT NULL,
   `lastLocationLng` FLOAT NULL,
   `lastLocationTime` DATETIME NULL,
+  `firebaseToken` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
