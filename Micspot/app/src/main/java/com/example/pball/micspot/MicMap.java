@@ -184,7 +184,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent micIntent = new Intent(MicMap.this, SignUpActivity.class);
+        Intent micIntent = new Intent(MicMap.this, MicPage.class);
         micIntent.putExtra("micId", marker.getTitle()); //Gives micId to signup to query db
         MicMap.this.startActivity(micIntent);
     }

@@ -231,10 +231,10 @@ public final class MicSpotService {
         call.enqueue(map);
     }
 
-    public void getMic(String micId, FragmentActivity activity, String jwt) throws IOException {
+    public void getMic(String micId, SignUpFragment fragment, String jwt) throws IOException {
         MicClient client = Create(jwt);
         Call<Mic> call = client.mic(micId);
-        call.enqueue(activity);
+        call.enqueue(fragment);
     }
 
     public static void GetJWT(String fbId, String fbToken, LoginActivity login) {
