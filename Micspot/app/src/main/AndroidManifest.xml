@@ -36,19 +36,23 @@
         <activity
             android:name=".MicMap"
             android:label="@string/title_activity_mic_map" />
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUpActivity"
-            android:label="@string/title_activity_sign_up" />
-        <activity
             android:name=".CreateMic"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".MicPage"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <!-- firebase stuff -->
         <service android:name=".MyFirebaseMessagingService">
@@ -63,8 +67,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <activity android:name=".MicPage"></activity>
     </application>
 
 </manifest>

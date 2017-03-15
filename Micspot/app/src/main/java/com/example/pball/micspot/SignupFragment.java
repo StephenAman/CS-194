@@ -30,17 +30,29 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
     private boolean isUserSignedUp;
     private boolean isUserProducer;
 
+    static SignUpFragment newInstance(String micId) {
+        SignUpFragment fragment = new SignUpFragment();
+
+        // Pass micId to fragment.
+        Bundle args = new Bundle();
+        args.putString("micId", micId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
-        return inflater.inflate(R.layout.fragment_signup, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
+        signupListView = (ListView) (rootView.findViewById (R.id.signup_list));
+        signupListView.setAdapter(listAdapter);
+        return rootView;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_sign_up);
         service = new MicSpotService();
         userId = getActivity().getSharedPreferences(
                 PREF_FILE, Context.MODE_PRIVATE
@@ -49,16 +61,13 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
                 PREF_FILE, Context.MODE_PRIVATE
         ).getString("jwt", null);
 
-        // TODO: Fix.
-        micId = "5g"; // getIntent().getExtras().getString("micId");
+        micId = getArguments().getString("micId");
         try {
             service.getMic(micId, this, jwt);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        signupListView = (ListView) getView().findViewById (R.id.signup_list);
         listAdapter = new SignupAdapter(getActivity());
-        signupListView.setAdapter(listAdapter);
     }
 
     @Override
