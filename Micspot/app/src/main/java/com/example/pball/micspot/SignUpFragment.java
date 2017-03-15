@@ -77,6 +77,9 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
             // Store mic and refresh signup list
             mic = response.body();
 
+            // Send mic in container activity
+            ((MicPage)getActivity()).setMic(mic);
+
             // Check if user is signed up to any of the slots
             isUserSignedUp = false;
             for (MicSpotService.Signup signup : mic.nextInstance.signups) {

@@ -1,49 +1,31 @@
 package com.example.pball.micspot;
 
-
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Button;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.io.IOException;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MicSettings extends AppCompatActivity {
     private static final String PREF_FILE = "SharedPrefs";
@@ -70,7 +52,6 @@ public class MicSettings extends AppCompatActivity {
         if (b != null) {
             mic = b.getParcelable("MicSpotService.Mic");
         }
-
 
         // Configure selection fields
 

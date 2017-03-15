@@ -184,8 +184,6 @@ public final class MicSpotService {
         }
     }
 
-
-
     public static class CreateMicData {
         public final String micName;
         public final String venueName;
@@ -240,8 +238,6 @@ public final class MicSpotService {
             this.duration = duration;
             this.updateDefaultStartDate = updateDefaultStartDate;
         }
-
-
     }
 
     public static class Signup {
