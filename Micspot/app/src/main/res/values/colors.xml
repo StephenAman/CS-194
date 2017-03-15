@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="micspotBlue">#2BAAF6</color>
+    <color name="micspotBlue">#2baaf6</color>
     <color name="micspotOrange">#FF5920</color>
     <color name="micspotYellow">#FFC420</color>
     <color name="white">#FFFFFF</color>

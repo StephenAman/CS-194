@@ -46,6 +46,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MicSettings"
+            android:label="MicSettings"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
             android:name=".CreateMic"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
