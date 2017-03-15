@@ -20,7 +20,7 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:text="Mic Settings"
+            android:text="Update Mic"
             android:textColor="@color/micspotOrange"
             android:fontFamily="cursive"
             android:textSize="48dp"

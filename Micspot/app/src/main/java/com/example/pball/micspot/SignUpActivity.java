@@ -3,11 +3,7 @@ package com.example.pball.micspot;
 import android.app.NotificationManager;
 import android.os.Bundle;
 import android.app.Activity;
-<<<<<<< HEAD
-import android.util.Log;
-=======
 import android.support.v4.app.NotificationCompat;
->>>>>>> e1e9b9e483fc0cc5e027ff6404452a21451f6ee1
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,12 +20,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
-<<<<<<< HEAD
 import java.io.Serializable;
-=======
 import java.lang.reflect.Array;
 import java.util.ArrayList;
->>>>>>> e1e9b9e483fc0cc5e027ff6404452a21451f6ee1
 
 public class SignUpActivity extends Activity implements Callback<MicSpotService.Mic> {
     public static final String PREF_FILE = "SharedPrefs";

@@ -4,6 +4,7 @@ package com.example.pball.micspot;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.LayoutInflater;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.Context;
@@ -62,15 +63,17 @@ public class MicSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_settings);
+        service = new MicSpotService();
         Bundle b = this.getIntent().getExtras();
         if (b != null) {
             mic = b.getParcelable("MicSpotService.Mic");
         }
-        setContentView(R.layout.activity_settings);
 
 
         // Configure selection fields
+
         dateField = (EditText) findViewById(R.id.mic_date_field);
         timeField = (EditText) findViewById(R.id.mic_time_field);
         addressField = (EditText) findViewById(R.id.mic_address_field);
@@ -117,7 +120,7 @@ public class MicSettings extends AppCompatActivity {
 //            int spinnerPosition = adapter.getPosition(mic.meetingBasis);
 //            spinner.setSelection(spinnerPosition);
 //        }
-
+    return;
     }
 
 
@@ -210,33 +213,33 @@ public class MicSettings extends AppCompatActivity {
         a.set(Calendar.SECOND, 0);
         a.set(Calendar.MILLISECOND, 0);
 
-        // Populate CreateMicData
-        MicSpotService.UpdateMicData data = new MicSpotService.UpdateMicData(
-                nameField.getText().toString(),
-                chosenPlace.getName().toString(),
-                chosenPlace.getAddress().toString(),
-                (float) chosenPlace.getLatLng().latitude,
-                (float) chosenPlace.getLatLng().longitude,
+        // update mic
+        MicSpotService.UpdateInstanceData data = new MicSpotService.UpdateInstanceData(
+                new MicSpotService.EventDateWrapper(
+                        a.getTime(),
+                        Integer.parseInt(durationField.getText().toString()),
+                        Integer.parseInt(durationField.getText().toString())),
                 a.getTime(),
-                Integer.parseInt(durationField.getText().toString()),
-                meetingBasis,
+                Integer.parseInt(numSlotsField.getText().toString()),
                 Integer.parseInt(setTimeField.getText().toString()),
-                Integer.parseInt(numSlotsField.getText().toString())
+                1, //unsure if cancellation is working currently
+                meetingBasis
         );
 
         // Send request
         String jwt = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("jwt", null);
+
         MicSpotService.MicClient client = service.Create(jwt);
-        Call<Void> call = client.updateInstance(micID, instanceid, data);
+        Call<Void> call = client.updateInstance(mic.id, mic.nextInstance.instanceId, data);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(
-                            MicSettings.this, "Mic was successfully created", Toast.LENGTH_SHORT
+                            MicSettings.this, "Mic was successfully updated", Toast.LENGTH_SHORT
                     ).show();
                 } else {
-                    Toast.makeText(MicSettings.this, "Failed to create mic", Toast.LENGTH_SHORT)
+                    Toast.makeText(MicSettings.this, "Failed to udpate mic", Toast.LENGTH_SHORT)
                         .show();
                 }
                 finish();

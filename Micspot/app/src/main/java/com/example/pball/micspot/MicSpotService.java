@@ -236,6 +236,8 @@ public final class MicSpotService {
             this.duration = duration;
             this.updateDefaultStartDate = updateDefaultStartDate;
         }
+
+
     }
 
     public static class Signup {
