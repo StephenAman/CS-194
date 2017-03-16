@@ -4,14 +4,20 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +35,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,6 +61,15 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
         mics = new HashMap<String, MicSpotService.MicSummary>();
         service = new MicSpotService();
         FirebaseMessaging.getInstance().subscribeToTopic("BayArea");//would adjust this if national
+
+        //this is to set the status bar to the same color as our Micspot Blue
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor("#2BAAF6"));
+        }
+
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
@@ -135,6 +152,8 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
                 parent.addView(windowDetails);
                 Button signupButton = new Button(MicMap.this);
                 signupButton.setText("Sign Up");
+                signupButton.setTextColor(Color.parseColor("#FF5920"));
+                signupButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 parent.addView(signupButton);
                 return parent;
             }
@@ -179,6 +198,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
         windowText.append(basis + " " + timeString + "\n");
         windowText.append("Producer: " + mic.createdBy + "\n");
         windowText.append("Next event: " + dateString);
+        windowText.setTextColor(Color.parseColor("#FF5920"));
         return windowText;
     }
 

@@ -4,14 +4,30 @@
     android:id="@+id/activity_create_mic"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+
     android:background="#FFFFFF"
     tools:context="com.example.pball.micspot.CreateMic">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:background="@color/micspotOrange"
+        android:textColor="@color/white"
+        android:fontFamily="cursive"
+        android:textStyle="bold|normal"
+        android:gravity="center"
+        android:textSize="28dp"
+        android:text="Create Mic"
+        android:ems="10"
+        android:id="@+id/editText" />
+
     <LinearLayout
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,21 +35,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
-            android:text="Create Mic"
-            android:textColor="@color/micspotOrange"
-            android:fontFamily="cursive"
-            android:textSize="48dp"
-            android:layout_width="match_parent"
-            android:id="@+id/textView3"
-            android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.Material.Display1" />
+
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="10dp">
 
             <EditText
                 android:layout_width="wrap_content"
