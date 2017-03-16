@@ -1,6 +1,8 @@
 package com.example.pball.micspot;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import java.util.List;
 
 public class MicPage extends AppCompatActivity {
     static final int NUM_TABS = 2;
+    protected MicSpotService.Mic mic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,18 @@ public class MicPage extends AppCompatActivity {
 
         // Configure TabLayout
         ((TabLayout) findViewById(R.id.tabs)).setupWithViewPager(pager);
+    }
+
+    public void openMicSettings(View view) {
+        Intent intent = new Intent(this, MicSettings.class);
+        if (mic != null) {
+            intent.putExtra("MicSpotService.Mic", mic);
+        }
+        startActivity(intent);
+    }
+
+    public void setMic(MicSpotService.Mic mic) {
+        this.mic = mic;
     }
 
     public class MicPageAdapter extends FragmentPagerAdapter {
