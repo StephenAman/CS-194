@@ -35,8 +35,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -51,18 +49,20 @@
                 android:ems="10"
                 android:id="@+id/mic_date_field"
                 android:layout_weight="1"
+                android:hint="Date"
                 android:textColorHint="@color/micspotOrange"
-                android:textAlignment="viewStart"
-                android:hint="Date"/>
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:textAlignment="textStart" />
 
             <Button
-                android:text="Select date"
+                android:text="Pick date "
                 android:textColor="@color/micspotOrange"
                 android:background="#FFFFFF"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/date_button"
-                android:onClick="showDatePicker"/>
+                android:onClick="showDatePicker" />
 
         </LinearLayout>
 
@@ -70,7 +70,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:gravity="center_vertical">
 
             <EditText
@@ -87,13 +86,13 @@
                 android:textAlignment="textStart" />
 
             <Button
-                android:text="Select time"
+                android:text="Pick time "
                 android:textColor="@color/micspotOrange"
                 android:background="#FFFFFF"
                 android:layout_height="wrap_content"
                 android:id="@+id/time_button"
                 android:layout_width="130dp"
-                android:onClick="showTimePicker"/>
+                android:onClick="showTimePicker" />
         </LinearLayout>
 
         <LinearLayout
@@ -103,17 +102,20 @@
             android:gravity="center_vertical">
 
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress"
                 android:ems="10"
                 android:id="@+id/mic_address_field"
                 android:layout_weight="1"
+                android:hint="Address"
                 android:textColorHint="@color/micspotOrange"
-                android:hint="Address" />
+                android:textColor="@color/micspotOrange"
+                android:background="#FFFFFF"
+                android:textAlignment="textStart" />
 
             <Button
-                android:text="Select place"
+                android:text="Pick place"
                 android:textColor="@color/micspotOrange"
                 android:background="#FFFFFF"
                 android:layout_height="wrap_content"
@@ -150,7 +152,6 @@
 
                 <EditText
                     android:inputType="textPersonName"
-                    android:textColor="@color/micspotOrange"
                     android:ems="10"
                     android:id="@+id/mic_name_field"
                     android:layout_width="0dp"
@@ -250,7 +251,6 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:layout_weight="1" />
-
 
                 <Spinner
                     android:id="@+id/mic_meeting_basis_spinner"

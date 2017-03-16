@@ -65,11 +65,7 @@ public class CreateMic extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#FF5920"));
         }
-
-
-
     }
-
 
     public void showDatePicker(View v) {
         Calendar c = Calendar.getInstance();
