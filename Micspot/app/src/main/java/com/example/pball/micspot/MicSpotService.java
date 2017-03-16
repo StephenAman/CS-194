@@ -85,7 +85,7 @@ public final class MicSpotService {
         public Mic(String id, String createdBy, String micName, String venueName,
                    String venueAddress, float venueLat, float venueLng, Date startDate,
                    int duration, String meetingBasis, int setTime, int numSlots,
-                   Instance nextInstance)  {
+                   Instance nextInstance) {
             this.id = id;
             this.createdBy = createdBy;
             this.micName = micName;
@@ -101,7 +101,7 @@ public final class MicSpotService {
             this.nextInstance = nextInstance;
         }
 
-        public Mic(Parcel in){
+        public Mic(Parcel in) {
             this.id = in.readString();
             this.createdBy = in.readString();
             this.micName = in.readString();
@@ -144,10 +144,21 @@ public final class MicSpotService {
             public Mic createFromParcel(Parcel in) {
                 return new Mic(in);
             }
+
             public Mic[] newArray(int size) {
                 return new Mic[size];
             }
         };
+    }
+
+    public static class Review {
+        public final String reviewerName;
+        public final String reviewText;
+
+        public Review(String reviewerName, String reviewText) {
+            this.reviewerName = reviewerName;
+            this.reviewText = reviewText;
+        }
     }
 
     public static class Instance implements Parcelable {
@@ -159,6 +170,7 @@ public final class MicSpotService {
         public final int setTime;
         public final int cancelled;
         public final List<Signup> signups;
+
         public Instance(String micId, String instanceId, Date startDate, Date endDate, int numSlots,
                         int setTime, int cancelled, List<Signup> signups) {
             this.micId = micId;
@@ -170,16 +182,7 @@ public final class MicSpotService {
             this.cancelled = cancelled;
             this.signups = signups;
         }
-        
-    public static class Review {
-        public final String reviewerName;
-        public final String reviewText;
 
-        public Review(String reviewerName, String reviewText) {
-            this.reviewerName = reviewerName;
-            this.reviewText = reviewText;
-        }
-    }
         public Instance(Parcel in) {
             this.micId = in.readString();
             this.instanceId = in.readString();
@@ -214,212 +217,224 @@ public final class MicSpotService {
             public Instance createFromParcel(Parcel in) {
                 return new Instance(in);
             }
+
             public Instance[] newArray(int size) {
                 return new Instance[size];
             }
         };
 
-    public static class CreateMicData {
-        public final String micName;
-        public final String venueName;
-        public final String venueAddress;
-        public final float venueLat;
-        public final float venueLng;
-        public final Date startDate;
-        public final int duration;
-        public final String meetingBasis;
-        public final int setTime;
-        public final int numSlots;
-        public CreateMicData(String micName, String venueName, String venueAddress,
-                             float venueLat, float venueLng, Date startDate, int duration,
-                             String meetingBasis, int setTime, int numSlots) {
-            this.micName = micName;
-            this.venueName = venueName;
-            this.venueAddress = venueAddress;
-            this.venueLat = venueLat;
-            this.venueLng = venueLng;
-            this.startDate = startDate;
-            this.duration = duration;
-            this.meetingBasis = meetingBasis;
-            this.setTime = setTime;
-            this.numSlots = numSlots;
-        }
     }
 
-    public static class UpdateInstanceData {
-        public EventDateWrapper eventDate;
-        public Date signupsOpenDate;
-        public int numSlots;
-        public int setTime;
-        public int cancelled;
-        public String meetingBasis;
-        public UpdateInstanceData(EventDateWrapper eventDate, Date signupsOpenDate, int numSlots,
-                                  int setTime, int cancelled, String meetingBasis) {
-            this.eventDate = eventDate;
-            this.signupsOpenDate = signupsOpenDate;
-            this.numSlots = numSlots;
-            this.setTime = setTime;
-            this.cancelled = cancelled;
-            this.meetingBasis = meetingBasis;
-        }
-    }
+        public static class CreateMicData {
+            public final String micName;
+            public final String venueName;
+            public final String venueAddress;
+            public final float venueLat;
+            public final float venueLng;
+            public final Date startDate;
+            public final int duration;
+            public final String meetingBasis;
+            public final int setTime;
+            public final int numSlots;
 
-    public static class EventDateWrapper {
-        public final Date startDate;
-        public final int duration;
-        public final int updateDefaultStartDate;
-        public EventDateWrapper(Date startDate, int duration, int updateDefaultStartDate) {
-            this.startDate = startDate;
-            this.duration = duration;
-            this.updateDefaultStartDate = updateDefaultStartDate;
-        }
-    }
-
-    public static class Signup implements Parcelable {
-        public final String userId;
-        public final String name;
-
-        public Signup(String userId, String name) {
-            this.userId = userId;
-            this.name = name;
-        }
-
-        public Signup(Parcel in) {
-            userId = in.readString();
-            name = in.readString();
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(userId);
-            dest.writeString(name);
-        }
-
-        public static final Parcelable.Creator<Signup> CREATOR
-                = new Parcelable.Creator<Signup>() {
-            public Signup createFromParcel(Parcel in) {
-                return new Signup(in);
+            public CreateMicData(String micName, String venueName, String venueAddress,
+                                 float venueLat, float venueLng, Date startDate, int duration,
+                                 String meetingBasis, int setTime, int numSlots) {
+                this.micName = micName;
+                this.venueName = venueName;
+                this.venueAddress = venueAddress;
+                this.venueLat = venueLat;
+                this.venueLng = venueLng;
+                this.startDate = startDate;
+                this.duration = duration;
+                this.meetingBasis = meetingBasis;
+                this.setTime = setTime;
+                this.numSlots = numSlots;
             }
-            public Signup[] newArray(int size) {
-                return new Signup[size];
+        }
+
+        public static class UpdateInstanceData {
+            public EventDateWrapper eventDate;
+            public Date signupsOpenDate;
+            public int numSlots;
+            public int setTime;
+            public int cancelled;
+            public String meetingBasis;
+
+            public UpdateInstanceData(EventDateWrapper eventDate, Date signupsOpenDate, int numSlots,
+                                      int setTime, int cancelled, String meetingBasis) {
+                this.eventDate = eventDate;
+                this.signupsOpenDate = signupsOpenDate;
+                this.numSlots = numSlots;
+                this.setTime = setTime;
+                this.cancelled = cancelled;
+                this.meetingBasis = meetingBasis;
             }
-        };
-    }
-
-    public static class FBToken {
-        public final String id;
-        public final String token;
-        public FBToken(String id, String token) {
-            this.id = id;
-            this.token = token;
         }
-    }
 
-    public static class JWTString {
-        public final String jwt;
-        public JWTString(String jwt) {
-            this.jwt = jwt;
+        public static class EventDateWrapper {
+            public final Date startDate;
+            public final int duration;
+            public final int updateDefaultStartDate;
+
+            public EventDateWrapper(Date startDate, int duration, int updateDefaultStartDate) {
+                this.startDate = startDate;
+                this.duration = duration;
+                this.updateDefaultStartDate = updateDefaultStartDate;
+            }
         }
-    }
 
-    public static class SignupSlot {
-        public final String slotNumber;
-        public SignupSlot(String slotNumber ) { this.slotNumber = slotNumber; }
-    }
+        public static class Signup implements Parcelable {
+            public final String userId;
+            public final String name;
 
-    public interface MicClient {
-        @POST("/auth/mobile")
-        Call<JWTString> getJWT(@Body FBToken token);
+            public Signup(String userId, String name) {
+                this.userId = userId;
+                this.name = name;
+            }
 
-        @GET("/api/mics")
-        Call<List<MicSummary>> mics();
+            public Signup(Parcel in) {
+                userId = in.readString();
+                name = in.readString();
+            }
 
-        @POST("/api/mics")
-        Call<Void> createMic(@Body CreateMicData data);
+            @Override
+            public int describeContents() {
+                return 0;
+            }
 
-        @GET("/api/mics/{id}")
-        Call<Mic> mic(@Path("id") String micId);
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(userId);
+                dest.writeString(name);
+            }
 
-        @POST("/api/mics/{micId}/instances/{instanceId}/signups")
-        Call<Void> addSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
-                             @Body SignupSlot slot);
+            public static final Parcelable.Creator<Signup> CREATOR
+                    = new Parcelable.Creator<Signup>() {
+                public Signup createFromParcel(Parcel in) {
+                    return new Signup(in);
+                }
 
-        @HTTP(method = "DELETE", path = "/api/mics/{micId}/instances/{instanceId}/signups", hasBody = true)
-        Call<Void> removeSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
-                                @Body SignupSlot slot);
+                public Signup[] newArray(int size) {
+                    return new Signup[size];
+                }
+            };
+        }
 
-        @PUT("/api/mics/{micId}/instances/{instanceId}")
-        Call<Void> updateInstance(@Path("micId") String micId, @Path("instanceId") String instanceId, @Body UpdateInstanceData data);
-    }
+        public static class FBToken {
+            public final String id;
+            public final String token;
 
-    public void getAllMics(MicMap map, String jwt) throws IOException {
-        MicClient client = Create(jwt);
-        Call<List<MicSummary>> call = client.mics();
-        call.enqueue(map);
-    }
+            public FBToken(String id, String token) {
+                this.id = id;
+                this.token = token;
+            }
+        }
 
-    public void getMic(String micId, SignUpFragment fragment, String jwt) throws IOException {
-        MicClient client = Create(jwt);
-        Call<Mic> call = client.mic(micId);
-        call.enqueue(fragment);
-    }
+        public static class JWTString {
+            public final String jwt;
 
-    public static void GetJWT(String fbId, String fbToken, LoginActivity login) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        MicClient client = retrofit.create(MicClient.class);
-        Call<JWTString> call = client.getJWT(new FBToken(fbId, fbToken));
-        call.enqueue(login);
-    }
+            public JWTString(String jwt) {
+                this.jwt = jwt;
+            }
+        }
 
-    /**
-     * MicClient factory.
-     */
-    public MicClient Create(String jwt) {
-        OkHttpClient okHttpClient;
-        if (jwt == null) {
-            okHttpClient = new OkHttpClient.Builder().build();
-        } else {
-            okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new JWTInterceptor(jwt))
+        public static class SignupSlot {
+            public final String slotNumber;
+
+            public SignupSlot(String slotNumber) {
+                this.slotNumber = slotNumber;
+            }
+        }
+
+        public interface MicClient {
+            @POST("/auth/mobile")
+            Call<JWTString> getJWT(@Body FBToken token);
+
+            @GET("/api/mics")
+            Call<List<MicSummary>> mics();
+
+            @POST("/api/mics")
+            Call<Void> createMic(@Body CreateMicData data);
+
+            @GET("/api/mics/{id}")
+            Call<Mic> mic(@Path("id") String micId);
+
+            @POST("/api/mics/{micId}/instances/{instanceId}/signups")
+            Call<Void> addSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
+                                 @Body SignupSlot slot);
+
+            @HTTP(method = "DELETE", path = "/api/mics/{micId}/instances/{instanceId}/signups", hasBody = true)
+            Call<Void> removeSignup(@Path("micId") String micId, @Path("instanceId") String instanceId,
+                                    @Body SignupSlot slot);
+
+            @PUT("/api/mics/{micId}/instances/{instanceId}")
+            Call<Void> updateInstance(@Path("micId") String micId, @Path("instanceId") String instanceId, @Body UpdateInstanceData data);
+        }
+
+        public void getAllMics(MicMap map, String jwt) throws IOException {
+            MicClient client = Create(jwt);
+            Call<List<MicSummary>> call = client.mics();
+            call.enqueue(map);
+        }
+
+        public void getMic(String micId, SignUpFragment fragment, String jwt) throws IOException {
+            MicClient client = Create(jwt);
+            Call<Mic> call = client.mic(micId);
+            call.enqueue(fragment);
+        }
+
+        public static void GetJWT(String fbId, String fbToken, LoginActivity login) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
-        }
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
-                .build();
-        MicClient client = retrofit.create(MicClient.class);
-        return client;
-    }
-
-    /**
-     * Add JWT authorization header to every API request.
-     */
-    final class JWTInterceptor implements Interceptor {
-        private String jwt;
-
-        public JWTInterceptor(String jwt) {
-            this.jwt = jwt;
+            MicClient client = retrofit.create(MicClient.class);
+            Call<JWTString> call = client.getJWT(new FBToken(fbId, fbToken));
+            call.enqueue(login);
         }
 
-        @Override
-        public Response intercept(Interceptor.Chain chain) throws IOException {
-            Request originalRequest = chain.request();
-            Request newRequest = originalRequest.newBuilder()
-                    .header("Authorization", "JWT " + jwt)
-                    .method(originalRequest.method(), originalRequest.body()).build();
-            return chain.proceed(newRequest);
+        /**
+         * MicClient factory.
+         */
+        public MicClient Create(String jwt) {
+            OkHttpClient okHttpClient;
+            if (jwt == null) {
+                okHttpClient = new OkHttpClient.Builder().build();
+            } else {
+                okHttpClient = new OkHttpClient.Builder()
+                        .addInterceptor(new JWTInterceptor(jwt))
+                        .build();
+            }
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+                    .create();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API_URL)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(okHttpClient)
+                    .build();
+            MicClient client = retrofit.create(MicClient.class);
+            return client;
         }
-    }
+
+        /**
+         * Add JWT authorization header to every API request.
+         */
+        final class JWTInterceptor implements Interceptor {
+            private String jwt;
+
+            public JWTInterceptor(String jwt) {
+                this.jwt = jwt;
+            }
+
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                Request originalRequest = chain.request();
+                Request newRequest = originalRequest.newBuilder()
+                        .header("Authorization", "JWT " + jwt)
+                        .method(originalRequest.method(), originalRequest.body()).build();
+                return chain.proceed(newRequest);
+            }
+        }
 }
