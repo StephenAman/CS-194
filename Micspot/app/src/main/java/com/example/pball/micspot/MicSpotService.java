@@ -184,7 +184,14 @@ public final class MicSpotService {
         }
     }
 
-
+    public static class Review {
+        public final String reviewerName;
+        public final String reviewText;
+        public Review(String reviewerName, String reviewText){
+            this.reviewerName = reviewerName;
+            this.reviewText = reviewText;
+        }
+    }
 
     public static class CreateMicData {
         public final String micName;

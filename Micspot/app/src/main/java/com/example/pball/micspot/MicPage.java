@@ -36,12 +36,12 @@ public class MicPage extends AppCompatActivity {
 
         // Add new SignUpFragment to adapter.
         adapter.addFragment(
-                SignUpFragment.newInstance(getIntent().getStringExtra("micId")), "Signups 1"
+                SignUpFragment.newInstance(getIntent().getStringExtra("micId")), "Signups"
         );
 
         // TODO: Pass ReviewFragment to adapter here. For now, use an extra SignUpFragment instead.
         adapter.addFragment(
-                SignUpFragment.newInstance(getIntent().getStringExtra("micId")), "Signups 2"
+                ReviewFragment.newInstance(getIntent().getStringExtra("micId")), "Reviews"
         );
         pager.setAdapter(adapter);
 
