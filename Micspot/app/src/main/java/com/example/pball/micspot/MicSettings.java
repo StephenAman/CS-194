@@ -1,7 +1,10 @@
 package com.example.pball.micspot;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.app.DatePickerDialog;
@@ -63,7 +66,12 @@ public class MicSettings extends AppCompatActivity {
         addressField.setKeyListener(null);
 
 
-
+        //this is to set the status bar to the same color as our Micspot Orange
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor("#FF5920"));
+        }
 
 
         // Configure spinner

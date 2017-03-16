@@ -26,4 +26,18 @@
         android:textColor="@color/white"
         android:background="@drawable/round_button"
         android:onClick="createMic"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:background="@color/micspotBlue"
+        android:textColor="@color/white"
+        android:fontFamily="cursive"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="28dp"
+        android:text="MicSpot"
+        android:ems="10"
+        android:id="@+id/editText" />
 </FrameLayout>

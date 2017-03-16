@@ -12,6 +12,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:backgroundTint="@color/micspotYellow"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -25,13 +26,16 @@
                 android:id="@+id/toolbar_title" />
             <ImageButton
                 android:id="@+id/mic_settings"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="42dp"
+                android:maxHeight="42dp"
+                android:scaleType="fitCenter"
+                android:layout_marginLeft="3dp"
                 android:layout_gravity="right|top"
-                android:src="@drawable/mr_ic_settings_dark"
-                android:background="@color/colorPrimary"
+                android:src="@drawable/settings_wheel"
+                android:background="@color/micspotYellow"
                 android:onClick="openMicSettings"/>
         </android.support.v7.widget.Toolbar>
 
@@ -39,6 +43,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/micspotYellow"
             app:tabMode="fixed"
             app:tabGravity="fill"/>
     </android.support.design.widget.AppBarLayout>
