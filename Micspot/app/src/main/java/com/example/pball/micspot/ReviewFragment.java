@@ -76,7 +76,7 @@ public class ReviewFragment extends Fragment {
         */
         listAdapter = new ReviewAdapter(getActivity());
 
-        MicSpotService.Review r = new MicSpotService.Review("Peter Ballmer", "This mic is awesome!");
+        MicSpotService.Review r = new MicSpotService.Review(null, "Peter Ballmer", "This mic is awesome!", null);
         listAdapter.add(r);
     }
 
