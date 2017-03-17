@@ -36,7 +36,8 @@
                 android:layout_gravity="right|top"
                 android:src="@drawable/settings_wheel"
                 android:background="@color/micspotYellow"
-                android:onClick="openMicSettings"/>
+                android:onClick="openMicSettings"
+                android:visibility="invisible"/>
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

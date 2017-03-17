@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MicPage extends AppCompatActivity {
+    static public final String PREF_FILE = "SharedPrefs";
     static final int NUM_TABS = 2;
     protected MicSpotService.Mic mic;
 
@@ -34,7 +36,6 @@ public class MicPage extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#FFC420"));
         }
-
 
         // Configure Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,12 +54,20 @@ public class MicPage extends AppCompatActivity {
         adapter.addFragment(
                 SignUpFragment.newInstance(getIntent().getStringExtra("micId")), "Signups"
         );
-
-        // TODO: Pass ReviewFragment to adapter here. For now, use an extra SignUpFragment instead.
+        // Add new ReviewFragment to adapter.
         adapter.addFragment(
                 ReviewFragment.newInstance(getIntent().getStringExtra("micId")), "Reviews"
         );
         pager.setAdapter(adapter);
+
+        // Check if we should show settings button. Note that this is just UX thing. The backend
+        // bars unauthorized users from making changes anyway, so it's good enough on the frontend
+        // to do a naive name equality check.
+        if (getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("userId", "").equals(
+           getIntent().getStringExtra("createdBy")
+        )) {
+            ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
+        }
 
         // Configure TabLayout
         ((TabLayout) findViewById(R.id.tabs)).setupWithViewPager(pager);
