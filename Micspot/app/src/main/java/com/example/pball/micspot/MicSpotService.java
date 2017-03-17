@@ -346,12 +346,12 @@ public final class MicSpotService {
         public String userId;
         public String userName;
         public String reviewText;
-        public Date creationDate;
-        public Review(String userId, String userName, String reviewText, Date creationDate) {
+        public Date time;
+        public Review(String userId, String userName, String reviewText, Date time) {
             this.userId = userId;
             this.userName = userName;
             this.reviewText = reviewText;
-            this.creationDate = creationDate;
+            this.time = time;
         }
     }
 

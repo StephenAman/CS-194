@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/big_layout"
-    android:foreground="@drawable/shape_window_dim"
     tools:context="com.example.pball.micspot.ReviewFragment">
 
     <ListView
@@ -11,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp" />
+        android:layout_centerHorizontal="true" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_review_fab"
@@ -23,6 +21,5 @@
         android:layout_gravity="right|bottom"
         android:src="@drawable/ic_add_circle_black_24dp"
         android:tint="@color/white"/>
-
 
 </FrameLayout>
