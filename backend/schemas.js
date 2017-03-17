@@ -86,7 +86,7 @@ var UpdateInstance = {
 					type: 'int',
 					required: true,
 					minimum: 0,
-					maximum: 0,
+					maximum: 1,
 				}
 			},
 			required: false,

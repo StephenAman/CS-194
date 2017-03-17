@@ -175,8 +175,9 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
             marker.icon(BitmapDescriptorFactory.fromAsset("Blue.bmp"));
             if (mic.status.equals("yellow")) {
                 marker.icon(BitmapDescriptorFactory.fromAsset("Yellow.bmp"));
+            } else if (mic.status.equals("red") {
+                marker.icon(BitmapDescriptorFactory.fromAsset("Red.bmp"));
             }
-            //marker.icon(BitmapDescriptorFactory.defaultMarker(markerColor)); //old default marker method
             builder.include(micLocation);
             mMap.addMarker(marker.position(micLocation).title(mic.micId));
         }

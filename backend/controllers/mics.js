@@ -479,14 +479,18 @@ GetMicSummary = function(mic) {
 						} else {
 							// Determine status of the next instance.
 							// This is 'green' if the event is happening in less
-							// than 24 hours, and 'yellow' if it is happening in more
-							// than 24 hours.
+							// than 24 hours, 'yellow' if it is happening in more
+							// than 24 hours, or 'red' if cancelled.
 							var now = moment();
 							var status = 'yellow';
-							var begin = moment(instance.get('startDate')).subtract(24, 'hours');
-							var end = moment(instance.get('endDate'));
-							if (now.isBetween(begin, end)) {
-								status = 'green';
+							if (instance.get('cancelled') == 1) {
+								status = 'red';
+							} else {
+								var begin = moment(instance.get('startDate')).subtract(24, 'hours');
+								var end = moment(instance.get('endDate'));
+								if (now.isBetween(begin, end)) {
+									status = 'green';
+								}
 							}
 							data = {
 								micId: mic.get('id'),
