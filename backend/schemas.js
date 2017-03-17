@@ -66,6 +66,30 @@ var CreateMic = {
 	}
 };
 
+var UpdateUser = {
+	type: 'object',
+	properties: {
+		lastLocation: {
+			type: 'object',
+			properties: {
+				lastLocationLat: {
+					type: 'float',
+					required: true,
+				},
+				lastLocationLng: {
+					type: 'float',
+					required: true,
+				}
+			},
+			required: false,
+		},
+		firebaseToken: {
+			type: 'string',
+			required: false,
+		}
+	}
+};
+
 var UpdateInstance = {
 	type: 'object',
 	properties: {
@@ -146,3 +170,4 @@ exports.CreateMic = CreateMic;
 exports.Signup = Signup;
 exports.CreateReview = CreateReview;
 exports.UpdateInstance = UpdateInstance;
+exports.UpdateUser = UpdateUser;

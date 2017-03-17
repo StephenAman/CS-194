@@ -342,6 +342,9 @@ MicController.deleteSignup = function(req, res) {
  * Updates a mic instance.
  */
 MicController.updateInstance = function(req, res) {
+	if (!req.hasEditPermissions) {
+		return res.status(403).send();
+	}
 	Instance.findOne(req.params.instanceId, function(err, instance) {
 		if (err) {
 			return res.status(500).send();

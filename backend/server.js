@@ -181,7 +181,7 @@ app.post('/api/users', function(req, res) {
 /**
  * '/api/users/:userId'
  *  GET: Fetch user by id
- *  PUT: Update user by id
+ *  PUT: Update user firebaseToken or location.
  */
 app.get('/api/users/:userId', function(req, res) {
 	User.findById(req.params.userId, function(err, user) {
@@ -189,23 +189,29 @@ app.get('/api/users/:userId', function(req, res) {
 			res.status(404).send();
 			return;
 		}
-		res.send(user.data);
+		result = {
+			id: user.get('id'),
+			name: user.get('name')
+		};
+		res.send(result);
 	});
 });
 
-app.put('/api/users/:userId', function(req, res) {
+app.put('/api/users/:userId', validate({body: schemas.UpdateUser}), function(req, res) {
 	// Check that you are updating your own user
 	if (req.params.userId != req.user.get("id")) {
 		res.status(401).send();
 		return;
 	}
 
-	// Update name field
-	if (req.body.name != null) {
-		req.user.set("name", req.body.name);
+	// Update and save user
+	if (req.body.lastLocation) {
+		req.user.set('lastLocationLat', req.body.lastLocation.lastLocationLat);
+		req.user.set('lastLocationLng', req.body.lastLocation.lastLocationLng);
 	}
-
-	// Save user to database
+	if (req.body.firebaseToken) {
+		req.user.set('firebaseToken', req.body.firebaseToken);
+	} 
 	req.user.save(function(err) { if (err) throw err; });
 	res.send();
 });

@@ -18,7 +18,9 @@ User.prototype.set = function(property, value) {
 };
 
 User.prototype.save = function(callback) {
-	db.query('UPDATE users SET name = ? WHERE id = ?', [this.get('name'), this.get('id')], function(err, results, fields) {
+	db.query('UPDATE users SET ? WHERE id = ?', 
+		[this.data, this.get('id')], 
+		function(err, results, fields) {
 		if (err) {
 			return callback(err);
 		} else {
@@ -31,7 +33,7 @@ User.prototype.save = function(callback) {
  * Retrieves a user from the database using 'id'.
  */
 User.findById = function(id, callback) {
-	db.query('SELECT id, name FROM users WHERE id = ?', [id], function(err, results, fields) {
+	db.query('SELECT * FROM users WHERE id = ?', [id], function(err, results, fields) {
 		if (err) {
 			return callback(err, false);
 		}
