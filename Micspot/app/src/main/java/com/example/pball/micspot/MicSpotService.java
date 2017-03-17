@@ -169,10 +169,11 @@ public final class MicSpotService {
         public final int numSlots;
         public final int setTime;
         public final int cancelled;
+        public final Date signupsOpenDate;
         public final List<Signup> signups;
 
         public Instance(String micId, String instanceId, Date startDate, Date endDate, int numSlots,
-                        int setTime, int cancelled, List<Signup> signups) {
+                        int setTime, int cancelled, Date signupsOpenDate, List<Signup> signups) {
             this.micId = micId;
             this.instanceId = instanceId;
             this.startDate = startDate;
@@ -180,6 +181,7 @@ public final class MicSpotService {
             this.numSlots = numSlots;
             this.setTime = setTime;
             this.cancelled = cancelled;
+            this.signupsOpenDate = signupsOpenDate;
             this.signups = signups;
         }
 
@@ -191,6 +193,11 @@ public final class MicSpotService {
             this.numSlots = in.readInt();
             this.setTime = in.readInt();
             this.cancelled = in.readInt();
+            if (in.readInt() == 1) {
+                signupsOpenDate = new Date(in.readLong());
+            } else {
+                signupsOpenDate = null;
+            }
             this.signups = new ArrayList<Signup>();
             in.readList(this.signups, Signup.class.getClassLoader());
         }
@@ -209,6 +216,12 @@ public final class MicSpotService {
             dest.writeInt(numSlots);
             dest.writeInt(setTime);
             dest.writeInt(cancelled);
+            if (signupsOpenDate != null) {
+                dest.writeInt(1);
+                dest.writeLong(signupsOpenDate.getTime());
+            } else {
+                dest.writeInt(0);
+            }
             dest.writeList(signups);
         }
 
