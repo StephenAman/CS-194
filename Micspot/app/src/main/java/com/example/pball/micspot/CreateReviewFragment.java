@@ -25,7 +25,7 @@ public class CreateReviewFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.review_popup, null);
+        View view = inflater.inflate(R.layout.fragment_create_review, null);
         final EditText reviewText = (EditText) view.findViewById(R.id.new_review_content);
 
         builder.setTitle("Create new review");
