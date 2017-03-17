@@ -189,13 +189,21 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
         DateFormat time = new SimpleDateFormat("h:mm a");
         String dateString = date.format(mic.startDate);
         String timeString = time.format(mic.startDate) + "-" + time.format(mic.endDate);
-        String basis = mic.meetingBasis.substring(0, 1).toUpperCase() +
-                       mic.meetingBasis.substring(1);
 
         windowText.append(mic.micName + "\n");
-        windowText.append(basis + " " + timeString + "\n");
-        windowText.append("Producer: " + mic.createdBy + "\n");
-        windowText.append("Next event: " + dateString);
+        boolean isRecurring =
+                (mic.meetingBasis != null && !mic.meetingBasis.toLowerCase().equals("none"));
+        if (isRecurring) {
+            String basis = mic.meetingBasis.substring(0, 1).toUpperCase() +
+                    mic.meetingBasis.substring(1);
+            windowText.append(basis + " " + timeString + "\n");
+            windowText.append("Producer: " + mic.createdBy + "\n");
+            windowText.append("Next event: " + dateString);
+        } else {
+            windowText.append(timeString + "\n");
+            windowText.append("Producer: " + mic.createdBy + "\n");
+            windowText.append("Date: " + dateString);
+        }
         windowText.setTextColor(Color.parseColor("#FF5920"));
         return windowText;
     }
