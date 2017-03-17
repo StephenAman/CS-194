@@ -105,7 +105,7 @@ public class MicSettings extends AppCompatActivity {
             chosenSignupDate = mic.nextInstance.signupsOpenDate;
             chosenSignupTime = mic.nextInstance.signupsOpenDate;
             signupDateField.setText(dateFormat.format(mic.nextInstance.signupsOpenDate));
-            timeField.setText(timeFormat.format(mic.nextInstance.signupsOpenDate));
+            signupTimeField.setText(timeFormat.format(mic.nextInstance.signupsOpenDate));
         }
         if (mic.nextInstance.cancelled == 1) {
             eventStatusSpinner.setSelection(1);

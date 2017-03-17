@@ -361,7 +361,7 @@ MicController.updateInstance = function(req, res) {
 		if (req.body.setTime) {
 			instance.set('setTime', req.body.setTime);
 		}
-		if (req.body.cancelled) {
+		if (req.body.cancelled || req.body.cancelled === 0) {
 			instance.set('cancelled', req.body.cancelled);
 		}
 		var updateDefaultStartDate = false;
