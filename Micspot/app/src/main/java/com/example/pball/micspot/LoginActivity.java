@@ -13,6 +13,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Call;
@@ -22,30 +23,30 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements Callback<MicSpotService.JWTString> {
     static public final String PREF_FILE = "SharedPrefs";
     private Intent loggedInIntent;
-    Button backToMap;
     CallbackManager callbackManager;
+    LoginButton loginButton;
+    Button logoutButton;
+    Button backToMapButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Check if user is already logged in
-        if (getSharedPreferences(PREF_FILE, MODE_PRIVATE).getBoolean("isLoggedIn", false)) {
-            loggedInIntent = new Intent(LoginActivity.this, MicMap.class);
-            backToMap = (Button) findViewById(R.id.map_button);
-            backToMap.setVisibility(View.VISIBLE);
-            backToMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LoginActivity.this.startActivity(loggedInIntent);
-                }
-            });
-            LoginActivity.this.startActivity(loggedInIntent);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        logoutButton = (Button) findViewById(R.id.logout_button);
+        backToMapButton = (Button) findViewById(R.id.map_button);
+
+        // Check if user is already logged in to determine what buttons to display.
+        boolean isLoggedIn =
+                getSharedPreferences(PREF_FILE, MODE_PRIVATE).getBoolean("isLoggedIn", false);
+        if (isLoggedIn) {
+            loginButton.setVisibility(View.INVISIBLE);
+            logoutButton.setVisibility(View.VISIBLE);
+            backToMapButton.setVisibility(View.VISIBLE);
         }
 
-        // Configure Facebook login
+        // Initialize Facebook login
         callbackManager = CallbackManager.Factory.create();
-
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -59,10 +60,6 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
                                 loginResult.getAccessToken().getToken(),
                                 LoginActivity.this
                         );
-                        if(getSharedPreferences(PREF_FILE, MODE_PRIVATE).getBoolean("isLoggedIn", false)){
-                            System.out.println("VIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIS");
-                            backToMap.setVisibility(View.VISIBLE);
-                        }
                     }
 
                     @Override
@@ -72,6 +69,10 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
                     public void onError(FacebookException error) {}
                 }
         );
+
+        if (isLoggedIn) {
+            StartMapActivity();
+        }
     }
 
     @Override
@@ -93,6 +94,11 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
         t.printStackTrace();
     }
 
+    public void StartMapActivity() {
+        Intent intent = new Intent(LoginActivity.this, MicMap.class);
+        LoginActivity.this.startActivity(intent);
+    }
+
     /**
      * Performs the steps necessary to log the user in to the application, such as storing the JWT,
      * and sending an updated Firebase token to the web server.
@@ -110,9 +116,10 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
         MicMap.refreshFirebaseToken(firebaseToken, jwt, userId);
 
         // Replace login button with logout button, show back to map button.
-        // TODO: Do here.
-        Intent intent = new Intent(LoginActivity.this, MicMap.class);
-        LoginActivity.this.startActivity(intent);
+        loginButton.setVisibility(View.INVISIBLE);
+        logoutButton.setVisibility(View.VISIBLE);
+        backToMapButton.setVisibility(View.VISIBLE);
+        StartMapActivity();
     }
 
     /**
@@ -127,6 +134,19 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
         editor.apply();
 
         // Replace logout button with login button, hide back to map button.
-        // TODO: Do here.
+        loginButton.setVisibility(View.VISIBLE);
+        logoutButton.setVisibility(View.INVISIBLE);
+        backToMapButton.setVisibility(View.INVISIBLE);
+
+        // Logout via FB Login Manager
+        LoginManager.getInstance().logOut();
+    }
+
+    public void LogOutClicked(View v) {
+        LogOut();
+    }
+
+    public void BackToMapClicked(View v) {
+        StartMapActivity();
     }
 }
