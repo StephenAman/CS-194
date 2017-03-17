@@ -13,6 +13,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginResult;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,25 +59,19 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
                                 loginResult.getAccessToken().getToken(),
                                 LoginActivity.this
                         );
-                       if(getSharedPreferences(PREF_FILE, MODE_PRIVATE).getBoolean("isLoggedIn", false)){
+                        if(getSharedPreferences(PREF_FILE, MODE_PRIVATE).getBoolean("isLoggedIn", false)){
                             System.out.println("VIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIS");
                             backToMap.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
-                    public void onCancel() {
-
-                    }
+                    public void onCancel() {}
 
                     @Override
-                    public void onError(FacebookException error) {
-
-                    }
+                    public void onError(FacebookException error) {}
                 }
         );
-
-
     }
 
     @Override
@@ -88,17 +84,49 @@ public class LoginActivity extends AppCompatActivity implements Callback<MicSpot
     public void onResponse(Call<MicSpotService.JWTString> call,
                            Response<MicSpotService.JWTString> response) {
         if (response.isSuccessful()) {
-            SharedPreferences.Editor editor = getSharedPreferences(PREF_FILE, MODE_PRIVATE).edit();
-            editor.putString("jwt", response.body().jwt);
-            editor.putBoolean("isLoggedIn", true);
-            editor.apply();
-            Intent intent = new Intent(LoginActivity.this, MicMap.class);
-            LoginActivity.this.startActivity(intent);
+            LogIn(response.body().jwt);
         }
     }
 
     @Override
     public void onFailure(Call<MicSpotService.JWTString> call, Throwable t) {
         t.printStackTrace();
+    }
+
+    /**
+     * Performs the steps necessary to log the user in to the application, such as storing the JWT,
+     * and sending an updated Firebase token to the web server.
+     */
+    public void LogIn(String jwt) {
+        // Update storage variables
+        String userId = getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("userId", null);
+        SharedPreferences.Editor editor = getSharedPreferences(PREF_FILE, MODE_PRIVATE).edit();
+        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        editor.putString("jwt", jwt);
+        editor.putBoolean("isLoggedIn", true);
+        editor.apply();
+
+        // Refresh Firebase token
+        MicMap.refreshFirebaseToken(firebaseToken, jwt, userId);
+
+        // Replace login button with logout button, show back to map button.
+        // TODO: Do here.
+        Intent intent = new Intent(LoginActivity.this, MicMap.class);
+        LoginActivity.this.startActivity(intent);
+    }
+
+    /**
+     * Performs the steps necessary to log the user out of the application.
+     */
+    public void LogOut() {
+        // Update storage variables
+        SharedPreferences.Editor editor = getSharedPreferences(PREF_FILE, MODE_PRIVATE).edit();
+        editor.remove("userId");
+        editor.remove("jwt");
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+
+        // Replace logout button with login button, hide back to map button.
+        // TODO: Do here.
     }
 }

@@ -115,7 +115,7 @@ public class ReviewFragment extends Fragment {
                 addReview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        MicSpotService.Review r = new MicSpotService.Review("test", reviewContent.getText().toString());
+                        MicSpotService.Review r = new MicSpotService.Review(null, "test", reviewContent.getText().toString(), null);
                         listAdapter.add(r);
                         frame.getForeground().setAlpha(0);
                         window.dismiss();
@@ -146,7 +146,7 @@ public class ReviewFragment extends Fragment {
 
             TextView tvReviewerName = (TextView) convertView.findViewById(R.id.reviewer_name);
             TextView tvReviewText = (TextView) convertView.findViewById(R.id.review_text);
-            tvReviewerName.setText(review.reviewerName);
+            tvReviewerName.setText(review.userName);
             tvReviewText.setText(review.reviewText);
             return convertView;
         }

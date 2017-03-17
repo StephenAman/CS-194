@@ -68,9 +68,6 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#2BAAF6"));
         }
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mic_map);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -214,5 +211,18 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     public void createMic(View view) {
         Intent intent = new Intent(this, CreateMic.class);
         startActivity(intent);
+    }
+
+    public static void refreshFirebaseToken(String token, String jwt, String userId) {
+        MicSpotService service = new MicSpotService();
+        MicSpotService.UpdateUserData data = new MicSpotService.UpdateUserData(null, token);
+        MicSpotService.MicClient client = service.Create(jwt);
+        Call<Void> call = client.updateUser(userId, data);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {}
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {}
+        });
     }
 }
