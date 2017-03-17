@@ -122,7 +122,7 @@ app.post('/auth/mobile', validate({body: schemas.MobileAuth}), function(req, res
 
 					// Retrieve the name of the user
 					request(
-						'https://graph.facebook.com/v2.8/' + req.body.id,
+						'https://graph.facebook.com/v2.8/me?access_token=' + req.body.token,
 						function(error, response, body) {
 							if (error) {
 								return res.status(500).send();
