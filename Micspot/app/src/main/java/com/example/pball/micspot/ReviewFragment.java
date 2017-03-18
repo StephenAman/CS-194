@@ -117,6 +117,7 @@ public class ReviewFragment extends Fragment implements Callback<List<MicSpotSer
 
         public void GetProfilePicture(String userId, final ImageView imView) {
             Bundle params = new Bundle();
+            params.putString("fields", "picture.type(large)");
 
             // Request profile picture URL from Facebook Graph.
             new GraphRequest(AccessToken.getCurrentAccessToken(), userId, params, HttpMethod.GET,
