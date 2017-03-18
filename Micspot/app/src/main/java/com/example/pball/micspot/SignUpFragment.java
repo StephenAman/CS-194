@@ -1,5 +1,6 @@
 package com.example.pball.micspot;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -216,7 +218,21 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
     public class MessageListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            // TODO: Figure out what to do here.
+            // Try to open FB Messenger. Unfortunately we cannot open a new message to a specific
+            // user, only switch to the app itself.
+            Intent intent= new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.setPackage("com.facebook.orca");
+            try
+            {
+                startActivity(intent);
+            }
+            catch (ActivityNotFoundException ex)
+            {
+                Toast.makeText(getActivity(), "Failed to open Facebook Messenger\nIs the app installed?",
+                    Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

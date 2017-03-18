@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.pball.micspot.SignUpFragment">
 
-
     <TextView
         android:id="@+id/signup_status"
         android:layout_width="fill_parent"
