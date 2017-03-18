@@ -1,9 +1,13 @@
 package com.example.pball.micspot;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +19,21 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.HttpMethod;
+import com.facebook.GraphResponse;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import org.json.JSONObject;
 
 public class ReviewFragment extends Fragment implements Callback<List<MicSpotService.Review>>,
         CreateReviewFragment.CreateReviewListener
@@ -77,7 +90,9 @@ public class ReviewFragment extends Fragment implements Callback<List<MicSpotSer
     }
 
     public class ReviewAdapter extends ArrayAdapter<MicSpotService.Review> {
-        public ReviewAdapter (Context context) { super(context, 0); }
+        public ReviewAdapter(Context context) {
+            super(context, 0);
+        }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -91,13 +106,77 @@ public class ReviewFragment extends Fragment implements Callback<List<MicSpotSer
             TextView tvReviewName = (TextView) convertView.findViewById(R.id.review_header);
             TextView tvReviewText = (TextView) convertView.findViewById(R.id.review_text);
             TextView tvReviewDate = (TextView) convertView.findViewById(R.id.review_date);
-            ImageView imReviewImage = (ImageView) convertView.findViewById(R.id.review_image);
-
+            ImageView imView = (ImageView) convertView.findViewById(R.id.review_image);
             tvReviewName.setText(review.userName);
             tvReviewText.setText(review.reviewText);
             SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
             tvReviewDate.setText(formatter.format(review.time));
+            GetProfilePicture(review.userId, imView);
             return convertView;
+        }
+
+        public void GetProfilePicture(String userId, final ImageView imView) {
+            Bundle params = new Bundle();
+
+            // Request profile picture URL from Facebook Graph.
+            new GraphRequest(AccessToken.getCurrentAccessToken(), userId, params, HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        @Override
+                        public void onCompleted(GraphResponse response) {
+                            if (response != null) {
+                                try {
+                                    JSONObject data = response.getJSONObject();
+                                    if (data.has("picture")) {
+                                        // Download picture asynchronously.
+                                        new AsyncLoadProfilePicture(
+                                                data.getJSONObject("picture").getJSONObject("data").getString("url"),
+                                                imView
+                                        ).execute();
+                                    }
+                                } catch (Exception e) {
+                                    // Test users will end up here since they cannot request
+                                    // prof pics from the public graph, unfortunately.
+                                }
+                            }
+                        }
+                    }).executeAsync();
+        }
+    }
+
+    /**
+     * Download the actual profile picture on a separate thread.
+     */
+    public class AsyncLoadProfilePicture extends AsyncTask<String, Void, Bitmap> {
+        String urlString;
+        ImageView imView;
+
+        public AsyncLoadProfilePicture(String url, ImageView imView) {
+            this.urlString = url;
+            this.imView = imView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Bitmap profilePic = null;
+            try {
+                URL url = new URL(urlString);
+                try {
+                    profilePic = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    return profilePic;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch(MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return profilePic;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+                imView.setImageBitmap(bitmap);
+            }
         }
     }
 
