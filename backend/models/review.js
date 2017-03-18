@@ -42,7 +42,7 @@ Review.findAll = function(micId, callback) {
 	db.query(
 		'SELECT userId, users.name AS userName, reviewText, time \
 		 FROM reviews INNER JOIN users on reviews.userId = users.id \
-		 WHERE micId = ?', [micId],
+		 WHERE micId = ? ORDER BY time DESC', [micId],
 		function(err, results, fields) {
 			if (err) {
 				return callback(err, false);
