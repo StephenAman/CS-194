@@ -288,6 +288,7 @@ public class MicSettings extends AppCompatActivity {
                     Toast.makeText(MicSettings.this, "Failed to update mic", Toast.LENGTH_SHORT)
                             .show();
                 }
+                setResult(RESULT_OK);
                 finish();
             }
 

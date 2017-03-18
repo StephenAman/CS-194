@@ -46,18 +46,21 @@ public final class MicSpotService {
         public final float venueLng;
         public final String micName;
         public final String createdBy;
+        public final String createdById;
         public final String meetingBasis;
         public final Date startDate;
         public final Date endDate;
 
         public MicSummary(String micId, String status, int venueLat, int venueLng, String micName,
-                          String createdBy, String meetingBasis, Date start, Date end) {
+                          String createdBy, String createdById, String meetingBasis, Date start,
+                          Date end) {
             this.micId = micId;
             this.status = status;
             this.venueLat = venueLat;
             this.venueLng = venueLng;
             this.micName = micName;
             this.createdBy = createdBy;
+            this.createdById = createdById;
             this.meetingBasis = meetingBasis;
             this.startDate = start;
             this.endDate = end;

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ public class MicPage extends AppCompatActivity {
     static public final String PREF_FILE = "SharedPrefs";
     static final int NUM_TABS = 2;
     protected MicSpotService.Mic mic;
+    MicPageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class MicPage extends AppCompatActivity {
 
         // Configure ViewPager
         ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
-        MicPageAdapter adapter = new MicPageAdapter(getSupportFragmentManager());
+        adapter = new MicPageAdapter(getSupportFragmentManager());
 
         // Add new SignUpFragment to adapter.
         adapter.addFragment(
@@ -62,11 +64,11 @@ public class MicPage extends AppCompatActivity {
 
         // Check if we should show settings button. Note that this is just UX thing. The backend
         // bars unauthorized users from making changes anyway, so it's good enough on the frontend
-        // to do a naive name equality check.
+        // to do a naive id equality check.
         if (getSharedPreferences(PREF_FILE, MODE_PRIVATE).getString("userId", "").equals(
-           getIntent().getStringExtra("createdBy")
+           getIntent().getStringExtra("createdById")
         )) {
-            ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
+            ((ImageButton)findViewById(R.id.mic_settings)).setVisibility(View.VISIBLE);
         }
 
         // Configure TabLayout
@@ -78,7 +80,7 @@ public class MicPage extends AppCompatActivity {
         if (mic != null) {
             intent.putExtra("MicSpotService.Mic", mic);
         }
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 
     public void setMic(MicSpotService.Mic mic) {
@@ -111,6 +113,18 @@ public class MicPage extends AppCompatActivity {
         public void addFragment(Fragment fr, String title) {
             fragmentList.add(fr);
             fragmentTitleList.add(title);
+        }
+    }
+
+    /**
+     * Refresh signups list after user has edited settings.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            SignUpFragment fragment = (SignUpFragment) adapter.getItem(0);
+            fragment.TryRefresh();
         }
     }
 }

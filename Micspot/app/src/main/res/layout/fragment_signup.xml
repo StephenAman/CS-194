@@ -1,13 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.pball.micspot.SignUpFragment">
 
+
+    <TextView
+        android:id="@+id/signup_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"
+        android:background="@color/micspotBlue"/>
+
     <ListView
         android:id="@+id/signup_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-</FrameLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/signup_status"/>
+</RelativeLayout>

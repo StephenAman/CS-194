@@ -212,7 +212,7 @@ public class MicMap extends FragmentActivity implements OnMapReadyCallback, Goog
     public void onInfoWindowClick(Marker marker) {
         Intent micIntent = new Intent(MicMap.this, MicPage.class);
         micIntent.putExtra("micId", marker.getTitle());
-        micIntent.putExtra("createdBy", mics.get(marker.getTitle()).createdBy);
+        micIntent.putExtra("createdById", mics.get(marker.getTitle()).createdById);
         micIntent.putExtra("micName", mics.get(marker.getTitle()).micName);
         MicMap.this.startActivity(micIntent);
     }

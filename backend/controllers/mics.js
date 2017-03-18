@@ -502,6 +502,7 @@ GetMicSummary = function(mic) {
 								venueLng: mic.get('venueLng'),
 								micName: mic.get('micName'),
 								createdBy: user.get('name'),
+								createdById: user.get('id'),
 								meetingBasis: mic.get('meetingBasis'),
 								startDate: instance.get('startDate'),
 								endDate: instance.get('endDate')

@@ -1,5 +1,6 @@
 package com.example.pball.micspot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SignUpFragment extends Fragment implements Callback<MicSpotService.Mic> {
     public static final String PREF_FILE = "SharedPrefs";
@@ -26,8 +29,10 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
     private String micId;
     private String userId;
     private String jwt;
+    private TextView statusView;
     private boolean isUserSignedUp;
     private boolean isUserProducer;
+    private boolean isSignupsEnabled;
 
     static SignUpFragment newInstance(String micId) {
         SignUpFragment fragment = new SignUpFragment();
@@ -44,6 +49,7 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
         View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
+        statusView = (TextView) rootView.findViewById(R.id.signup_status);
         signupListView = (ListView) (rootView.findViewById (R.id.signup_list));
         signupListView.setAdapter(listAdapter);
         return rootView;
@@ -75,6 +81,25 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
         if (response.isSuccessful()) {
             // Store mic and refresh signup list
             mic = response.body();
+
+            // Check whether signups are open
+            isSignupsEnabled = true;
+            Date now = new Date();
+            if (mic.nextInstance.cancelled == 1) {
+                isSignupsEnabled = false;
+                statusView.setText("This mic has been cancelled");
+                statusView.setVisibility(View.VISIBLE);
+            } else if (mic.nextInstance.signupsOpenDate != null &&
+                    now.before(mic.nextInstance.signupsOpenDate)) {
+                isSignupsEnabled = false;
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY hh:mm a");
+                statusView.setText("Signups open at " + formatter.format(
+                        mic.nextInstance.signupsOpenDate)
+                );
+                statusView.setVisibility(View.VISIBLE);
+            } else {
+                statusView.setVisibility(View.GONE);
+            }
 
             // Set mic in container activity
             ((MicPage)getActivity()).setMic(mic);
@@ -121,7 +146,7 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
             Button btSignup = (Button) convertView.findViewById(R.id.signup_button);
             TextView tvPosition = (TextView) convertView.findViewById(R.id.signup_num);
             TextView tvName = (TextView) convertView.findViewById(R.id.signup_name);
-            btSignup.setEnabled(true);
+            btSignup.setEnabled(isSignupsEnabled);
 
             if (signup == null) {
                 // Slot is available
@@ -137,6 +162,7 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
                 tvName.setText(signup.name);
                 if (isUserProducer || signup.userId.equals(userId)) {
                     // Slot is taken by the app user
+                    btSignup.setEnabled(true);
                     btSignup.setText("Remove");
                     btSignup.setOnClickListener(new AdjustSignupListener(position, true));
                 } else {
@@ -191,6 +217,14 @@ public class SignUpFragment extends Fragment implements Callback<MicSpotService.
         @Override
         public void onClick(View view) {
             // TODO: Figure out what to do here.
+        }
+    }
+
+    public void TryRefresh() {
+        try {
+            service.getMic(micId, SignUpFragment.this, jwt);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
