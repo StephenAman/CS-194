@@ -1,4 +1,4 @@
-var moment = require('moment');
+var moment = require('moment-timezone');
 
 var Instance = require('../models/instance.js');
 var Mic = require('../models/mic.js');
@@ -432,10 +432,12 @@ MicController.updateMeetingBasis = function(req, res, instance, updateDefaultSta
  * Adds a new review for this mic.
  */
 MicController.createReview = function(req, res) {
+	creationTime = moment().tz("America/Los_Angeles").format("YYYY-MM-DD HH:mm:ss");
 	var reviewData = {
 		'userId': req.user.get('id'),
 		'micId': req.params.micId,
 		'reviewText': req.body.reviewText,
+		'time': creationTime
 	}
 	Review.create(reviewData, function(err, review) {
 		if (err) {

@@ -1,15 +1,9 @@
 package com.example.pball.micspot;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import android.support.v4.app.FragmentActivity;
-
-
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.OkHttpClient;
@@ -23,13 +17,12 @@ import retrofit2.http.HTTP;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
-import retrofit2.http.DELETE;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.util.Date;
-import java.util.logging.Logger;
 
 public final class MicSpotService {
     public static final String API_URL = "http://138.68.7.110:8080";
